@@ -7,15 +7,15 @@ from array_bit_plane import BitPlane
 from collections import namedtuple
 Params = namedtuple('ImageParams', ['nbits_per_layer', 'grid_size', 'as_rgb'])
 ActionParams = namedtuple('ActionParams', ['bitplane', 'grid', 'modifier'])
-DEFAULT_PARAMS = Params(8, 8, True)
+DEFAULT_PARAMS = Params(8, (8,8), True)
 DEFAULT_ACTION = 'dummy'
 get_im_mode = lambda is_rgb: 'RGB' if is_rgb else 'L'
 
 def load_image(infile, as_rgb):
     return Image.open(infile).convert(get_im_mode(as_rgb))
 
-def write_image(outfile, im, as_rgb):
-    im.save(outfile, get_im_mode(as_rgb))
+def write_image(outfile, im):
+    im.save(outfile, outfile.split('.')[-1])
 
 def image_to_array(im):
     return np.array(im)
@@ -31,6 +31,7 @@ def dummy_action_fcn(grid, params):
     # print grid.block_view((0,0,0))
     # print grid.block_view((61,0,0))
     #
+    pass
 
 def act_on_gridded_bitplane(im, action_params, params):
     """
@@ -46,12 +47,14 @@ def act_on_gridded_bitplane(im, action_params, params):
     if action_params.grid:
         cur = Grid(cur, params.grid_size)
 
-    action_fcn(cur, params)
+    action_params.modifier(cur, params)
 
     if action_params.bitplane:
         if action_params.grid:
             cur = cur.arr
         cur = BitPlane(cur).stack()
+    elif action_params.grid:
+        cur = cur.arr
     new_im = array_to_image(cur)
     return new_im
 
@@ -68,7 +71,8 @@ def get_action_params(action):
         action_params = ActionParams(True, True, eliminate_image_complexity)
     return action_params
 
-def test(infile):
+def test_null_action(infile):
+    """ makes sure that dummy_fcns won't change image by gridding and/or bitplaning """
     for action in ['dummy_none', 'dummy_plane', 'dummy_grid', 'dummy_all']:
         outfile = infile.replace('.', action + '.')
         main(infile, outfile, action)
@@ -77,8 +81,8 @@ def main(infile, outfile, action=DEFAULT_ACTION, params=DEFAULT_PARAMS):
     im = load_image(infile, params.as_rgb)
     action_params = get_action_params(action)
     new_im = act_on_gridded_bitplane(im, action_params, params)
-    write_image(outfile, new_im, params.as_rgb)
+    write_image(outfile, new_im)
 
 if __name__ == '__main__':
     infile = 'vessel.png'
-    test(infile)
+    test_null_action(infile)

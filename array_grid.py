@@ -8,6 +8,13 @@ def error(base, msg, is_fatal=False):
     else:
         print error_msg
 
+"""
+TO DO:
+    * fix adjust_grid_inds
+    * write test cases
+    * make sure I am even accessing the correct dims of self.arr?
+"""
+
 class Grid:
     """ for gridding the first 2-dims of an array """
     def __init__(self, arr, grid_size):
