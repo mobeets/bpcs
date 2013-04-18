@@ -11,6 +11,7 @@ def error(base, msg, is_fatal=False):
 """
 TO DO:
     * fix adjust_grid_inds
+    * write iterator over grids
     * write test cases
     * make sure I am even accessing the correct dims of self.arr?
 """

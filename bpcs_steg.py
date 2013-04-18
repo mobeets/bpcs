@@ -1,88 +1,79 @@
-import numpy as np
-import Image # source: http://www.pythonware.com/library/pil/handbook/image.htm
+from act_on_image import act_on_image, DEFAULT_PARAMS
+from text_to_image import txt_to_uint8_array
 
-from array_grid import Grid
-from array_bit_plane import BitPlane
-
-from collections import namedtuple
-Params = namedtuple('ImageParams', ['nbits_per_layer', 'grid_size', 'as_rgb'])
-ActionParams = namedtuple('ActionParams', ['bitplane', 'grid', 'modifier'])
-DEFAULT_PARAMS = Params(8, (8,8), True)
-DEFAULT_ACTION = 'dummy'
-get_im_mode = lambda is_rgb: 'RGB' if is_rgb else 'L'
-
-def load_image(infile, as_rgb):
-    return Image.open(infile).convert(get_im_mode(as_rgb))
-
-def write_image(outfile, im):
-    im.save(outfile, outfile.split('.')[-1])
-
-def image_to_array(im):
-    return np.array(im)
-
-def array_to_image(arr):
-    return Image.fromarray(np.uint8(arr))
-
-def eliminate_image_complexity(grid, params):
-    pass
-
-def dummy_action_fcn(grid, params):
-    # iterate through grids, do whatever...
-    # print grid.block_view((0,0,0))
-    # print grid.block_view((61,0,0))
-    #
-    pass
-
-def act_on_gridded_bitplane(im, action_params, params):
+def arr_bpcs_complexity(arr):
     """
-    im is an image
-    converts im to a gridded, bit-planed numpy array
-        (gridded and bit-planed only if specified in action_params)
-    then applies action_params.modifier to that array
-        and returns the resulting new image
+    arr is a 2-d numpy array
+    returns the fraction of maximum bpcs_complexity in arr
+        where bpcs_complexity is total sum of bit changes
+        moving along each row and each column
     """
-    cur = image_to_array(im)
-    if action_params.bitplane:
-        cur = BitPlane(cur).slice(params.nbits_per_layer)
-    if action_params.grid:
-        cur = Grid(cur, params.grid_size)
+    nrows, ncols = arr.shape
+    max_complexity = ((nrows-1)*ncols) + ((ncols-1)*nrows)
+    nbit_changes = lambda items, length: [items[i] ^ items[i-1] for i in range(1, length)]
+    k = 0
+    for row in arr:
+        k += nbit_changes(row, ncols)
+    for col in arr.transpose():
+        k += nbit_changes(col, nrows)
+    return (k*1.0)/max_complexity
 
-    action_params.modifier(cur, params)
+def eliminate_image_complexity(grids, params):
+    alpha = params.custom['alpha']
+    for grid in grids:
+        if arr_bpcs_complexity(grid) < alpha:
+            grid = conjugate(grid)
 
-    if action_params.bitplane:
-        if action_params.grid:
-            cur = cur.arr
-        cur = BitPlane(cur).stack()
-    elif action_params.grid:
-        cur = cur.arr
-    new_im = array_to_image(cur)
-    return new_im
+def next_grid_to_replace(grids):
+    for grid in grids:
+        if arr_bpcs_complexity(grid) < alpha:
+            yield grid
+
+def embed_message_in_vessel(grids, params):
+    alpha = params.custom['alpha']
+    message_grids = list(params.custom['message_grids'])
+    conjugated = []
+    i = 0
+    for grid in next_grid_to_replace(grids):
+        if not message_grids:
+            # not sure if we're supposed to remove all complexities in o.g. image
+            # i.e. stop placing messages and just conjugate grids under alpha...
+            pass
+        # get next message_grid
+        cur_message = message_grids.pop()
+        # conjugate if necessary, keep track of message_grids conjugated
+        if arr_bpcs_complexity(cur_message) < alpha:
+            cur_message = conjugate(cur_message)
+            conjugated.append(i)
+        i += 1
+        # replace grid with message_grid
+        grid = cur_message
 
 def get_action_params(action):
-    if action == 'dummy_all':
-        action_params = ActionParams(True, True, dummy_action_fcn)
-    elif action == 'dummy_none':
-        action_params = ActionParams(False, False, dummy_action_fcn)
-    elif action == 'dummy_grid':
-        action_params = ActionParams(False, True, dummy_action_fcn)
-    elif action == 'dummy_plane':
-        action_params = ActionParams(True, False, dummy_action_fcn)
-    elif action == 'eliminate_image_complexity':
-        action_params = ActionParams(True, True, eliminate_image_complexity)
+    if action == 'eliminate_image_complexity':
+        action_params = ActionParams(True, True, True, eliminate_image_complexity, {'alpha': 0.3})
+    elif action == 'bpcs':
+        action_params = ActionParams(True, True, True, embed_message_in_vessel, {'alpha': 0.3, 'message_grids': ''})
     return action_params
 
-def test_null_action(infile):
-    """ makes sure that dummy_fcns won't change image by gridding and/or bitplaning """
-    for action in ['dummy_none', 'dummy_plane', 'dummy_grid', 'dummy_all']:
-        outfile = infile.replace('.', action + '.')
-        main(infile, outfile, action)
+def remove_complexity(infile, outfile):
+    action_params = get_action_params('eliminate_image_complexity')
+    act_on_image(infile, outfile, action_params)
 
-def main(infile, outfile, action=DEFAULT_ACTION, params=DEFAULT_PARAMS):
-    im = load_image(infile, params.as_rgb)
-    action_params = get_action_params(action)
-    new_im = act_on_gridded_bitplane(im, action_params, params)
-    write_image(outfile, new_im)
+def set_message_grids(messagefile, action_params, params=DEFAULT_PARAMS):
+    content = open(messagefile).read()
+    n, m = params.grid_size
+    n_grids = len(content)/(n*m)
+    arr = txt_to_uint8_array(content, [n,m*n_grids])
+    arr = BitPlane(arr, action_params.gray).slice(params.nbits_per_layer)
+    arr = Grid(arr, params.grid_size)
+    action_params.custom['message_grids'] = arr
+
+def bpcs_steg(infile, messagefile, outfile):
+    action_params = get_action_params('bpcs')
+    set_message_grids(messagefile, action_params)
+    act_on_image(infile, outfile, action_params)
 
 if __name__ == '__main__':
-    infile = 'vessel.png'
-    test_null_action(infile)
+    infile = 'docs/vessel.png'
+    remove_complexity(infile, infile.replace('.', '_old.'))
