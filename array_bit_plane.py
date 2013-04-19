@@ -121,7 +121,7 @@ class BitPlane:
         """
         # FIXME
         if self.gray:
-            self.arr = gray(self.arr)
+            self.arr = pbc_to_cgc(self.arr)
         return self.arr
 
     def stack(self):
@@ -129,6 +129,6 @@ class BitPlane:
         the reverse of slicing
         """
         if self.gray:
-            self.arr = gray(self.arr)
+            self.arr = cgc_to_pbc(self.arr)
         # FIXME
         return self.arr

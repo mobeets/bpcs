@@ -1,5 +1,6 @@
-from act_on_image import act_on_image, DEFAULT_PARAMS
+from act_on_image import act_on_image, Params
 from text_to_image import txt_to_uint8_array
+from array_message import get_message_blocks
 
 def arr_bpcs_complexity(arr):
     """
@@ -10,7 +11,7 @@ def arr_bpcs_complexity(arr):
     """
     nrows, ncols = arr.shape
     max_complexity = ((nrows-1)*ncols) + ((ncols-1)*nrows)
-    nbit_changes = lambda items, length: [items[i] ^ items[i-1] for i in range(1, length)]
+    nbit_changes = lambda items, length: sum([items[i] ^ items[i-1] for i in range(1, length)])
     k = 0
     for row in arr:
         k += nbit_changes(row, ncols)
@@ -49,30 +50,23 @@ def embed_message_in_vessel(grids, params):
         # replace grid with message_grid
         grid = cur_message
 
-def get_action_params(action):
+def get_params(action):
+    # ['nbits_per_layer', 'grid_size', 'as_rgb', 'gray', 'modifier', 'custom']
     if action == 'eliminate_image_complexity':
-        action_params = ActionParams(True, True, True, eliminate_image_complexity, {'alpha': 0.3})
+        params = Params(8, (8,8), True, True, eliminate_image_complexity, {'alpha': 0.3})
     elif action == 'bpcs':
-        action_params = ActionParams(True, True, True, embed_message_in_vessel, {'alpha': 0.3, 'message_grids': ''})
-    return action_params
+        params = Params(8, (8,8), True, True, embed_message_in_vessel, {'alpha': 0.3, 'message_grids': ''})
+    return params
 
 def remove_complexity(infile, outfile):
-    action_params = get_action_params('eliminate_image_complexity')
-    act_on_image(infile, outfile, action_params)
-
-def set_message_grids(messagefile, action_params, params=DEFAULT_PARAMS):
-    content = open(messagefile).read()
-    n, m = params.grid_size
-    n_grids = len(content)/(n*m)
-    arr = txt_to_uint8_array(content, [n,m*n_grids])
-    arr = BitPlane(arr, action_params.gray).slice(params.nbits_per_layer)
-    arr = Grid(arr, params.grid_size)
-    action_params.custom['message_grids'] = arr
+    params = get_params('eliminate_image_complexity')
+    act_on_image(infile, outfile, params)
 
 def bpcs_steg(infile, messagefile, outfile):
-    action_params = get_action_params('bpcs')
-    set_message_grids(messagefile, action_params)
-    act_on_image(infile, outfile, action_params)
+    params = get_params('bpcs')
+    message_grids = get_message_grids(messagefile, params)
+    params.custom['message_grids'] = message_grids
+    act_on_image(infile, outfile, params)
 
 if __name__ == '__main__':
     infile = 'docs/vessel.png'

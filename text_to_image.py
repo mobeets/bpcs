@@ -81,13 +81,21 @@ def test_invertibility(txtfile):
     assert txt1 == txt2, show_html_diff((txt1, 'OG'), (txt2, 'NEW'))
 
 if __name__ == '__main__':
-    txtfile = 'tmp.txt'
-    test_adjust_txt_and_get_dims()
-    test_invertibility(txtfile)
+    # txtfile = 'tmp.txt'
+    # test_adjust_txt_and_get_dims()
+    # test_invertibility(txtfile)
 
-    # infile = '/Users/mobeets/Desktop/tmp.txt'
-    # outfile = '/Users/mobeets/Desktop/tmp.png'
-    # txt_to_image(infile, outfile)
+    infile = '/Users/mobeets/bpcs-steg/docs/tmp.txt'
+    outfile = '/Users/mobeets/bpcs-steg/docs/tmp.png'
+    txt_to_image(infile, outfile)
+
+    infile = '/Users/mobeets/bpcs-steg/docs/tmp1.txt'
+    outfile = '/Users/mobeets/bpcs-steg/docs/tmp1.png'
+    txt_to_image(infile, outfile)
+
+    infile = '/Users/mobeets/bpcs-steg/docs/tmp2.txt'
+    outfile = '/Users/mobeets/bpcs-steg/docs/tmp2.png'
+    txt_to_image(infile, outfile)
 
     # infile = '/Users/mobeets/Desktop/tmp2.png'
     # outfile = '/Users/mobeets/Desktop/tmp2.txt'
