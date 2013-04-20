@@ -1,3 +1,4 @@
+import numpy as np
 
 def list_to_grids(arr, dims):
     """
@@ -7,11 +8,21 @@ def list_to_grids(arr, dims):
         then stacks each char in blocks, where each block.shape == dims
     returns sequence of bits
     """
-    length_missing = (dims[0]*dims[1]) - (len(arr) % (dims[0]*dims[1]))
-    arr = np.array(arr + [0]*length_missing)
-    ngrids = len(arr) / (dims[0]*dims[1])
-    assert len(arr) % (dims[0]*dims[1]) == 0
+    area = dims[0]*dims[1]
+    length_missing = area - (len(arr) % area)
+    arr += [0]*length_missing
+    arr = np.array(arr)
+    ngrids = len(arr) / area
+    assert len(arr) % area == 0
     return np.resize(arr, [dims[0], dims[1], ngrids])
+
+def grids_to_list(grids):
+    """
+    grids is list of 2d numpy arrays
+    returns list
+        inverse of list_to_grids
+    """
+    return np.vstack(grids).flatten().tolist()
 
 def get_message_grids(messagefile, params):
     """
@@ -22,18 +33,14 @@ def get_message_grids(messagefile, params):
 
     NOTE: may want to read differently? not necessarily reading as ascii...
     """
-    def bits(f):
-        """ reads the bits from a file, high bits first """
-        bytes = (ord(b) for b in f.read())
+    def bits(out):
+        """ reads the bits from a str, high bits first """
+        bytes = (ord(b) for b in out)
         for b in bytes:
             for i in reversed(xrange(8)):
                 yield (b >> i) & 1
-    # FIXME
-    message = list(bits(open(messagefile, 'r')))
+    message = list(bits(open(messagefile, 'r').read()))
     return list_to_grids(message, params.grid_size)
-
-def grids_to_list(grids):
-    return np.vstack(grids).flatten().to_list()
 
 def grids_to_str(grids):
     """
@@ -45,6 +52,11 @@ def grids_to_str(grids):
     """
     # FIXME
     bits = grids_to_list(grids)
+    nspare = 8 - (len(bits) % 8)
+    bits += [0]*nspare
+    nbytes = len(bits) / 8
+    bytes = np.resize(np.array(bits), [nbytes, 8])
+    return ''.join([chr(byte) for byte in bytes])
 
 def write_message_grids(outfile, grids):
     """

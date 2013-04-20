@@ -8,8 +8,10 @@ import numpy as np
 
 def test_bin_arr_to_grids_invertibility():
     # note: only true when they perfectly divide into grids of dim
-    arr = np.array([0,1,1,1,1,0,0,0,1,0,1,0,0,0,0,0,1,1,1,0,0,1,1,0])
+    arr = [0,1,1,1,1,0,0,0,1,0,1,0,0,0,0,0,1,1,1,0,0,1,1,0]
     assert grids_to_list(list_to_grids(arr, [2,3])) == arr
+    assert grids_to_list(list_to_grids(arr, [6,1])) == arr
+    assert grids_to_list(list_to_grids(arr, [3,4])) == arr
 
 def test_bpcs_complexity():
     arr = np.array([[1,0,0,1], [0,1,1,0], [1,1,1,1]])

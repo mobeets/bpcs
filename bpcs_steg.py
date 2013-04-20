@@ -1,6 +1,6 @@
 from act_on_image import act_on_image, Params
 from text_to_image import txt_to_uint8_array
-from array_message import get_message_blocks
+from array_message import get_message_grids
 
 def arr_bpcs_complexity(arr):
     """
