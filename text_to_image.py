@@ -1,20 +1,81 @@
 from PIL import Image
 import numpy as np
 from math import sqrt
+import re
+import string
 from test_utils import show_html_diff
 
-def get_prod_of_shape(arr):
-    return arr.shape[0] * arr.shape[1] * arr.shape[2]
+def digits_in_base_as_tuple(x, base):
+    """
+    x is int
+    base is int
 
-def txt_to_uint8_array(txt, dims):
-    colors = [ord(x) for x in txt]
+    gets the digits of x in the new base
+    e.g. digits_in_base_as_tuple(20, 2) == (1,0,1,0,0)
+    """
+    cur = x
+    digs = []
+    while cur:
+        digs.append(cur % base)
+        cur /= base
+    return tuple(reversed(digs))
+
+def get_word_color_map_fcn(words):
+    """
+    given a set of words, returns a fcn
+        returning an RGB color
+        where each word is maximally spaced out from other word colors
+    """
+    words = set(words)
+    words.add(' ') # add space for padding
+    ncolors = 256**3
+    ncolors_per_word = ncolors/len(words)
+    word_order = sorted(words)
+    def get_word_color(word):
+        ind = word_order.index(word)
+        assert ind >= 0
+        colors = digits_in_base_as_tuple(ind*ncolors_per_word, 256)
+        while len(colors) < 3:
+            colors = (0,) + colors
+        assert len(colors) == 3
+        return colors
+    return get_word_color
+
+def list_to_uint8_array(colors, dims):
     arr = np.array(colors)
     arr_shaped = np.resize(arr, dims)
-    if arr.shape[0] != get_prod_of_shape(arr_shaped):
-        diff = get_prod_of_shape(arr_shaped) - arr.shape[0]
+    if arr.size != arr_shaped.size:
+        diff = arr_shaped.size - arr.size
         print "WARNING: txt will be replicated by {0} chars when printed to image".format(diff)
     arr_shaped = np.uint8(arr_shaped)
     return arr_shaped
+
+def adjust_words_and_get_dims(words, verbose=False):
+    area = len(words)
+    one_side = sqrt(area)
+    desired_side = (int(one_side)+1) if one_side > int(one_side) else int(one_side)
+    diff = desired_side**2 - area
+    words += [' ']*diff
+    assert len(words) == desired_side**2, desired_side**2 - len(words)
+    if verbose:
+        print 'Adding %s words to end of txt' % (diff,)
+    return words, [desired_side, desired_side, 3]
+    
+def str_to_words(txt, keep_spaces=False):
+    if keep_spaces:
+        words = str_to_words(txt)
+        spaces = [x for x in re.split('[^ ]', txt) if x] + [' ']
+        return [x for pair in zip(words, spaces) for x in pair]
+    else:
+        return txt.split()
+        # return re.sub('['+string.punctuation+']', '', txt).split()
+
+def txt_to_uint8_array_by_word(txt):
+    words = str_to_words(txt, True)
+    words, dims = adjust_words_and_get_dims(words)
+    get_color = get_word_color_map_fcn(words)
+    colors = [get_color(word) for word in words]
+    return list_to_uint8_array(colors, dims)
 
 def adjust_txt_and_get_dims(txt, verbose=False):
     added = 0
@@ -37,6 +98,11 @@ def adjust_txt_and_get_dims(txt, verbose=False):
         print 'Adding %s spaces to end of txt' % (added,)
     return txt, [desired_side, desired_side, 3]
 
+def txt_to_uint8_array_by_char(txt):
+    txt, dims = adjust_txt_and_get_dims(txt, True)
+    colors = [ord(x) for x in txt]
+    return list_to_uint8_array(colors, dims)
+
 def image_to_txt(imfile, txtfile):
     """
     converts each character to a number
@@ -49,16 +115,18 @@ def image_to_txt(imfile, txtfile):
     """
     png = Image.open(imfile).convert('RGB')
     arr = np.array(png)
-    dims = get_prod_of_shape(arr)
+    dims = arr.size
     arr_flat = np.resize(arr, dims)
     chars = [chr(x) for x in arr_flat]
     with open(txtfile, 'w') as f:
         f.write(''.join(chars))
 
-def txt_to_image(txtfile, imfile):
+def txt_to_image(txtfile, imfile, by_char=True):
     txt = open(txtfile).read()
-    txt, dims = adjust_txt_and_get_dims(txt, True)
-    arr = txt_to_uint8_array(txt, dims)
+    if by_char:
+        arr = txt_to_uint8_array_by_char(txt)
+    else:
+        arr = txt_to_uint8_array_by_word(txt)
     im = Image.fromarray(arr)
     im.save(imfile)
 
@@ -81,22 +149,25 @@ def test_invertibility(txtfile):
     txt2 = open(new_txtfile).read().strip()
     assert txt1 == txt2, show_html_diff((txt1, 'OG'), (txt2, 'NEW'))
 
+def test_all():
+    txtfile = 'docs/tmp.txt'
+    test_adjust_txt_and_get_dims()
+    test_invertibility(txtfile)
+
 if __name__ == '__main__':
-    # txtfile = 'tmp.txt'
-    # test_adjust_txt_and_get_dims()
-    # test_invertibility(txtfile)
+    test_all()
 
     infile = '/Users/mobeets/bpcs-steg/docs/tmp.txt'
     outfile = '/Users/mobeets/bpcs-steg/docs/tmp.png'
-    txt_to_image(infile, outfile)
+    txt_to_image(infile, outfile, False)
 
-    infile = '/Users/mobeets/bpcs-steg/docs/tmp1.txt'
-    outfile = '/Users/mobeets/bpcs-steg/docs/tmp1.png'
-    txt_to_image(infile, outfile)
+    # infile = '/Users/mobeets/bpcs-steg/docs/tmp1.txt'
+    # outfile = '/Users/mobeets/bpcs-steg/docs/tmp1.png'
+    # txt_to_image(infile, outfile)
 
-    infile = '/Users/mobeets/bpcs-steg/docs/tmp2.txt'
-    outfile = '/Users/mobeets/bpcs-steg/docs/tmp2.png'
-    txt_to_image(infile, outfile)
+    # infile = '/Users/mobeets/bpcs-steg/docs/tmp2.txt'
+    # outfile = '/Users/mobeets/bpcs-steg/docs/tmp2.png'
+    # txt_to_image(infile, outfile)
 
     # infile = '/Users/mobeets/Desktop/tmp2.png'
     # outfile = '/Users/mobeets/Desktop/tmp2.txt'
