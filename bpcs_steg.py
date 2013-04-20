@@ -1,6 +1,6 @@
 from act_on_image import act_on_image, Params
 from text_to_image import txt_to_uint8_array
-from array_message import get_message_grids
+from array_message import read_message_grids
 
 def arr_bpcs_complexity(arr):
     """
@@ -64,7 +64,7 @@ def remove_complexity(infile, outfile):
 
 def bpcs_steg(infile, messagefile, outfile):
     params = get_params('bpcs')
-    message_grids = get_message_grids(messagefile, params)
+    message_grids = read_message_grids(messagefile, params)
     params.custom['message_grids'] = message_grids
     act_on_image(infile, outfile, params)
 

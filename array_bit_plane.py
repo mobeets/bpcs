@@ -16,15 +16,16 @@ TO DO:
     * test cases
 """
 
-def iterate_pixels(arr):
-    """
-    arr is a numpy array
-    yields successive pixels in arr
-        where each pixel might be multiple dimensions
-        e.g. bit-planed and/or layered
-    """
-    # FIXME
-    yield arr
+# def iterate_pixels(arr):
+#     """
+#     arr is a numpy array
+#     yields successive pixels in arr
+#         where each pixel might be multiple dimensions
+#         e.g. bit-planed and/or layered
+#     """
+#     for i in range(arr.shape[0]):
+#         for j in range(arr.shape[1]):
+#             yield arr[i,j]
 
 def arr_map(arr, fcn):
     """
@@ -33,8 +34,12 @@ def arr_map(arr, fcn):
     returns arr with fcn applied to each pixel in arr
         where pixel is defined in iterate_pixels
     """
-    for pixel in iterate_pixels(arr):
-        pixels = fcn(pixel)
+    for i in range(arr.shape[0]):
+        for j in range(arr.shape[1]):
+            arr[i,j] = fcn(arr[i,j])
+    # WARNING: no altering in place with iterate_pixels!
+    # for pixel in iterate_pixels(arr):
+        # pixel = fcn(pixel)
     return arr
 
 def pbc_to_cgc(arr):
@@ -49,13 +54,16 @@ def pbc_to_cgc(arr):
     assert cgc_to_pbc(pbc_to_cgc(arr)) == arr
     """
     def pbc_to_cgc_mapper(planes):
+        """
+        each plane, e.g. [0,1,1,1,0,0,0,1], represents a layer (color) of the pixel
+        """
         new_planes = []
-        for i, plane in enumerate(planes):
+        for i in range(planes.shape[1]):
             if i == 0:
-                new_planes.append(planes[i])
+                new_planes.append(planes[:, i].tolist())
             else:
-                new_planes.append(xor_lists(planes[i], planes[i-1]))
-        return np.array(new_planes)
+                new_planes.append(xor_lists(planes[:, i], planes[:, i-1]))
+        return np.array(new_planes).transpose()
     return arr_map(arr, pbc_to_cgc_mapper)
 
 def cgc_to_pbc(arr):
@@ -70,13 +78,16 @@ def cgc_to_pbc(arr):
     assert cgc_to_pbc(pbc_to_cgc(arr)) == arr
     """
     def cgc_to_pbc_mapper(planes):
+        """
+        each plane, e.g. [0,1,1,1,0,0,0,1], represents a layer (color) of the pixel
+        """
         new_planes = []
-        for i, plane in enumerate(planes):
+        for i in range(planes.shape[1]):
             if i == 0:
-                new_planes.append(planes[i])
+                new_planes.append(planes[:, i].tolist())
             else:
-                new_planes.append(xor_lists(planes[i], new_planes[i-1]))
-        return np.array(new_planes)
+                new_planes.append(xor_lists(planes[:, i], new_planes[i-1]))
+        return np.array(new_planes).transpose()
     return arr_map(arr, cgc_to_pbc_mapper)
 
 def conjugate(arr):

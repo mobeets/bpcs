@@ -19,9 +19,10 @@ def txt_to_uint8_array(txt, dims):
 def adjust_txt_and_get_dims(txt, verbose=False):
     added = 0
     # pad with 0s to make divisible by 3
-    rem = 3-(len(txt)%3)
-    txt += ' '*rem
-    added += rem
+    rem = len(txt) % 3
+    add = 3-rem if rem else 0
+    txt += ' '*add
+    added += add
 
     # pad with 0s to make square
     area = len(txt)/3
