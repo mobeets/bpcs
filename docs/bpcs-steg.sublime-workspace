@@ -112,51 +112,11 @@
 	"buffers":
 	[
 		{
-			"file": "array_bit_plane.py",
+			"file": "/Users/mobeets/bpcs-steg/text_to_image.py",
 			"settings":
 			{
-				"buffer_size": 532,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "array_grid.py",
-			"settings":
-			{
-				"buffer_size": 2837,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "bpcs_steg.py",
-			"settings":
-			{
-				"buffer_size": 2966,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "text_to_image.py",
-			"settings":
-			{
-				"buffer_size": 899,
+				"buffer_size": 6198,
 				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "progress.txt",
-			"settings":
-			{
-				"buffer_size": 2653,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "overview.txt",
-			"settings":
-			{
-				"buffer_size": 1650,
-				"line_ending": "Unix"
 			}
 		}
 	],
@@ -184,18 +144,27 @@
 	},
 	"file_history":
 	[
+		"/Users/mobeets/bpcs-steg/plot_image.py",
+		"/Users/mobeets/bpcs-steg/docs/tmp.txt",
+		"/Users/mobeets/bpcs-steg/tmp.py",
+		"/Users/mobeets/bpcs-steg/text_to_image.py",
+		"/Users/mobeets/Dropbox/Lifelog/emailer/tmp_THIS.txt",
+		"/Users/mobeets/Dropbox/Work/Biarri/time_sheet.txt",
+		"/Users/mobeets/Dropbox/Lifelog/emailer/weekly_purchase_summary.py",
+		"/Users/mobeets/Dropbox/Lifelog/config/config.py",
+		"/Users/mobeets/Dropbox/Lifelog/emailer/tmp_LAST.txt",
+		"/Users/mobeets/Dropbox/Lifelog/emailer/tmp_AVG.txt",
+		"/Users/mobeets/Dropbox/Lifelog/config/config.txt",
 		"/Users/mobeets/bpcs-steg/progress.txt",
 		"/Users/mobeets/bpcs-steg/bpcs_steg.py",
 		"/Users/mobeets/bpcs-steg/array_grid.py",
 		"/Users/mobeets/bpcs-steg/array_bit_plane.py",
 		"/Users/mobeets/bpcs-steg/overview.txt",
 		"/Users/mobeets/Desktop/tmp.txt",
-		"/Users/mobeets/bpcs-steg/text_to_image.py",
 		"/Users/mobeets/Dropbox/Lists/Unsorted/misc2.txt",
 		"/Users/mobeets/Dropbox/bpcs_steg.py",
 		"/Users/mobeets/Dropbox/Lifelog/meta/WIL_design.txt",
 		"/Users/mobeets/Dropbox/Lifelog/meta/issues.txt",
-		"/Users/mobeets/Dropbox/Lifelog/emailer/weekly_purchase_summary.py",
 		"/Users/mobeets/Dropbox/Lifelog/emailer/config.txt",
 		"/Users/mobeets/Dropbox/Lifelog/lifelog/bases/manager.py",
 		"/Users/mobeets/Dropbox/Lifelog/emailer/tmp_goog.txt",
@@ -234,7 +203,6 @@
 		"/Users/mobeets/Dropbox/Lists/Tracked/lifelog_current.txt",
 		"/Users/mobeets/Dropbox/Journal/conversation with Michael, 20130330 2030-0130.rtf",
 		"/Users/mobeets/Dropbox/Lists/Tracked/jess_sex.txt",
-		"/Users/mobeets/Dropbox/Work/Biarri/time_sheet.txt",
 		"/Users/mobeets/Dropbox/Lifelog/lifelog/google/config.py",
 		"/Users/mobeets/Dropbox/Lifelog/lifelog/google/get_spreadsheet.py",
 		"/Users/mobeets/Dropbox/Lifelog/lifelog/oneoffs/merge_googledoc_with_lifelog.py",
@@ -303,15 +271,7 @@
 		"/Users/mobeets/Desktop/summer_fun_albums.txt",
 		"/Users/mobeets/Dropbox/Written/Frank.txt",
 		"/Users/mobeets/Dropbox/wii_info.txt",
-		"/Users/mobeets/Desktop/to_do.txt",
-		"/Users/mobeets/Dropbox/Lists/Tracked/habits-02202011-05242011.csv",
-		"/Users/mobeets/Dropbox/Lists/Tracked/habits_02202011-05242011.xml",
-		"/Users/mobeets/Dropbox/Lists/Tracked/habits.ods",
-		"/Users/mobeets/Dropbox/Lists/Misc/misc3.txt",
-		"/Users/mobeets/Dropbox/Lists/Misc/misc2.txt",
-		"/Users/mobeets/Dropbox/Lists/Tracked/scripts/rtf_journal_reader.py",
-		"/Users/mobeets/Downloads/PyRTF-0.45/examples/examples2.py",
-		"/Users/mobeets/Downloads/PyRTF-0.45/examples/examples.py"
+		"/Users/mobeets/Desktop/to_do.txt"
 	],
 	"find":
 	{
@@ -330,6 +290,21 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"reds",
+			"from",
+			"plot",
+			"dots",
+			"izu",
+			"Wr-sherlock",
+			"immortality",
+			"others",
+			"S:",
+			"L:",
+			"G:",
+			"C:",
+			"A:",
+			"BkTM",
+			"CdStegBP",
 			"im",
 			"__self__",
 			"room",
@@ -442,22 +417,7 @@
 			"Skype",
 			"smoke",
 			"high",
-			"hacky-sack: ",
-			"|",
-			"*}",
-			"}[L]",
-			"}[D]",
-			"Snarkmark",
-			"…",
-			"{P}[L]",
-			"É",
-			"Australian",
-			"hacky",
-			"{L}[T]",
-			"lucy",
-			"{L}[T]",
-			"{L}",
-			"{L}[S]"
+			"hacky-sack: "
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -521,18 +481,18 @@
 			[
 				{
 					"buffer": 0,
-					"file": "array_bit_plane.py",
+					"file": "/Users/mobeets/bpcs-steg/text_to_image.py",
 					"settings":
 					{
-						"buffer_size": 532,
+						"buffer_size": 6198,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								655,
+								655
 							]
 						],
 						"settings":
@@ -540,137 +500,7 @@
 							"syntax": "Packages/Python/Python.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "array_grid.py",
-					"settings":
-					{
-						"buffer_size": 2837,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "bpcs_steg.py",
-					"settings":
-					{
-						"buffer_size": 2966,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "text_to_image.py",
-					"settings":
-					{
-						"buffer_size": 899,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "progress.txt",
-					"settings":
-					{
-						"buffer_size": 2653,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Text/Plain text.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "overview.txt",
-					"settings":
-					{
-						"buffer_size": 1650,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Text/Plain text.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 131.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"

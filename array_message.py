@@ -39,6 +39,7 @@ def str_to_grids(message, params):
             for i in reversed(xrange(8)):
                 yield (b >> i) & 1
     bits_list = list(bits(message))
+    # return bits_list
     return list_to_grids(bits_list, params.grid_size)
 
 def grids_to_str(grids):
@@ -60,6 +61,9 @@ def grids_to_str(grids):
     byte_to_str = lambda byte: int('0b' + ''.join(str(x) for x in byte.tolist()), 2)
     byte_to_char = lambda byte: chr(byte_to_str(byte))
     return ''.join([byte_to_char(byte) for byte in bytes])
+
+def get_next_message_grid_sized(arr, dims):
+    pass
 
 def read_message_grids(messagefile, params):
     """

@@ -2,9 +2,42 @@ from act_on_image import Params, act_on_image
 from array_bit_plane import pbc_to_cgc, cgc_to_pbc, conjugate, BitPlane
 from bpcs_steg import arr_bpcs_complexity
 from array_message import list_to_grids, grids_to_list, str_to_grids, grids_to_str
+from array_grid import get_next_grid_dims
 
 from test_utils import show_html_diff
 import numpy as np
+
+def test_get_next_grid_dims():
+    arr = np.arange(96)
+    arr = np.resize(arr, [4,4,3,2])
+    ans = [
+            [slice(0,3), slice(0,2), 0, 0],
+            [slice(0,3), slice(2,4), 0, 0],
+            [slice(3,4), slice(0,2), 0, 0],
+            [slice(3,4), slice(2,4), 0, 0],
+            [slice(0,3), slice(0,2), 0, 1],
+            [slice(0,3), slice(2,4), 0, 1],
+            [slice(3,4), slice(0,2), 0, 1],
+            [slice(3,4), slice(2,4), 0, 1],
+            [slice(0,3), slice(0,2), 1, 0],
+            [slice(0,3), slice(2,4), 1, 0],
+            [slice(3,4), slice(0,2), 1, 0],
+            [slice(3,4), slice(2,4), 1, 0],
+            [slice(0,3), slice(0,2), 1, 1],
+            [slice(0,3), slice(2,4), 1, 1],
+            [slice(3,4), slice(0,2), 1, 1],
+            [slice(3,4), slice(2,4), 1, 1],
+            [slice(0,3), slice(0,2), 2, 0],
+            [slice(0,3), slice(2,4), 2, 0],
+            [slice(3,4), slice(0,2), 2, 0],
+            [slice(3,4), slice(2,4), 2, 0],
+            [slice(0,3), slice(0,2), 2, 1],
+            [slice(0,3), slice(2,4), 2, 1],
+            [slice(3,4), slice(0,2), 2, 1],
+            [slice(3,4), slice(2,4), 2, 1],
+        ]
+    for i, dims in enumerate(get_next_grid_dims(arr, [3,2])):
+        assert dims == ans[i]
 
 def test_grids_to_str_invertibility():
     message = 'hello there asfasdf asdfasdf asdfasdf asd,f asd; asdf !fdf'
@@ -111,6 +144,7 @@ def test_all():
     test_cgc_to_pbc()
     test_pbc_to_cgc_invertibility()
     test_bpcs_complexity()
+    test_get_next_grid_dims()
     infile = 'docs/vessel.png'
     # test_null_action(infile)
 

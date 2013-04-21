@@ -6,26 +6,10 @@ def xor_lists(a, b):
 
 """
 TO CODE:
-    * iterate_pixels
     * conjugate
     * BitPlane.slice()
     * BitPlane.stack()
-
-TO DO:
-    * image complexity
-    * test cases
 """
-
-# def iterate_pixels(arr):
-#     """
-#     arr is a numpy array
-#     yields successive pixels in arr
-#         where each pixel might be multiple dimensions
-#         e.g. bit-planed and/or layered
-#     """
-#     for i in range(arr.shape[0]):
-#         for j in range(arr.shape[1]):
-#             yield arr[i,j]
 
 def arr_map(arr, fcn):
     """
@@ -37,9 +21,6 @@ def arr_map(arr, fcn):
     for i in range(arr.shape[0]):
         for j in range(arr.shape[1]):
             arr[i,j] = fcn(arr[i,j])
-    # WARNING: no altering in place with iterate_pixels!
-    # for pixel in iterate_pixels(arr):
-        # pixel = fcn(pixel)
     return arr
 
 def pbc_to_cgc(arr):

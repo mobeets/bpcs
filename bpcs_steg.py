@@ -1,6 +1,6 @@
 from act_on_image import act_on_image, Params
-from text_to_image import txt_to_uint8_array
-from array_message import read_message_grids
+from array_message import read_message_grids, get_next_message_grid_sized
+from array_grid import get_next_grid_dims
 
 def arr_bpcs_complexity(arr):
     """
@@ -19,29 +19,27 @@ def arr_bpcs_complexity(arr):
         k += nbit_changes(col, nrows)
     return (k*1.0)/max_complexity
 
-def eliminate_image_complexity(grids, params):
+def eliminate_image_complexity(arr, params):
     alpha = params.custom['alpha']
-    for grid in grids:
+    for dims in get_next_grid_dims(arr, params.grid_size):
+        grid = arr[dims]
         if arr_bpcs_complexity(grid) < alpha:
             grid = conjugate(grid)
+    return arr
 
-def next_grid_to_replace(grids):
-    for grid in grids:
-        if arr_bpcs_complexity(grid) < alpha:
-            yield grid
-
-def embed_message_in_vessel(grids, params):
+def embed_message_in_vessel(arr, params):
     alpha = params.custom['alpha']
-    message_grids = list(params.custom['message_grids'])
+    get_next_message_grid = lambda x,y: get_next_message_grid_sized(params.custom['message_grids'], (x, y))
     conjugated = []
     i = 0
-    for grid in next_grid_to_replace(grids):
-        if not message_grids:
+    for dims in get_next_grid_dims(arr):
+        grid = arr[dims]
+        if not arr_bpcs_complexity(grid) < alpha:
             # not sure if we're supposed to remove all complexities in o.g. image
             # i.e. stop placing messages and just conjugate grids under alpha...
-            pass
+            continue
         # get next message_grid
-        cur_message = message_grids.pop()
+        cur_message = get_next_message_grid(nrows, ncols)
         # conjugate if necessary, keep track of message_grids conjugated
         if arr_bpcs_complexity(cur_message) < alpha:
             cur_message = conjugate(cur_message)
@@ -49,6 +47,7 @@ def embed_message_in_vessel(grids, params):
         i += 1
         # replace grid with message_grid
         grid = cur_message
+    return arr
 
 def get_params(action):
     # ['nbits_per_layer', 'grid_size', 'as_rgb', 'gray', 'modifier', 'custom']

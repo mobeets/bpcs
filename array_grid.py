@@ -1,73 +1,40 @@
-from math import ceil
-from numpy.lib.stride_tricks import as_strided as ast
+import numpy as np
+import itertools
 
-def error(base, msg, is_fatal=False):
-    error_msg = 'ERROR (' + base + '): ' + msg
-    if is_fatal:
-        raise Exception(error_msg)
-    else:
-        print error_msg
+def get_next_grid_dims(arr, dims):
+    """
+    arr is a numpy array of shape [x0, x1, ..., xN]
+    dims is a 2d array, the shape of the grid
+        where each 'grid' is arr[dims[0], dims[1], i2, i3, ..., iN]
+        for some i2, i3, ..., iN
 
-"""
-TO DO:
-    * fix adjust_grid_inds
-    * write iterator over grids
-    * write test cases
-    * make sure I am even accessing the correct dims of self.arr?
-"""
+    iterates through the grids of arr
+        starting by iterating from 0..xN, then 0..xN-1, ..., 0..x2
+        and in the first two dimensions, from left-to-right and then top-to-bottom
+    e.g. if arr.shape == [4,4,2,2] and dims == [4,4]
+        returns:
+            arr[:,:,0,0]
+            arr[:,:,0,1]
+            arr[:,:,1,0]
+            arr[:,:,1,1]
+    """
+    nrows, ncols = arr.shape[0], arr.shape[1]
+    rows_per_grid, cols_per_grid = dims[0], dims[1]
 
-class Grid:
-    """ for gridding the first 2-dims of an array """
-    def __init__(self, arr, grid_size):
-        self.arr = arr
-        self.grid_size = grid_size
-        self.dims = self.get_grid_dims()
+    def get_inds(total_length, grid_length):
+        lefts = range(0, total_length, grid_length)
+        rights = [min(total_length, left+grid_length) for left in lefts]
+        return zip(lefts, rights)
+    xs = get_inds(nrows, rows_per_grid)
+    ys = get_inds(ncols, cols_per_grid)
 
-    def get_grid_dims(self):
-        """
-        calculates the max indices for accessing the grids of self.arr
-        """
-        assert len(self.grid_size) == 2
-        ngrids = lambda x, ngrids: int(ceil(x*1.0/ngrids))
-        grid_counts = [ngrids(self.arr.shape[i], self.grid_size[i]) for i in range(2)]
-        shape_dims = [self.arr.shape[i] for i in range(2, len(self.arr.shape))]
-        return grid_counts + shape_dims
+    nlayers = len(arr.shape)-2
+    assert nlayers > 0
+    zs = itertools.product(*[range(arr.shape[i+2]) for i in range(nlayers)])
+    for z in zs:
+        for (xleft, xright) in xs:
+            for (yleft, yright) in ys:
+                yield [slice(xleft, xright), slice(yleft, yright)] + list(z)
 
-    def grid_view(self, inds):
-        """
-        inds is list, the indices of the grid desired
-            e.g. if inds == [i,j,k] it gets the ith block down, the jth block right, the kth block deep
-            note: len(inds) == len(self.arr.shape)
-            (blocks are 0-indexed)
-        corrects the indices accessing self.arr where they would access outside the dims
-        and returns the grid accessed using those indices
-        """
-        if len(inds) != len(self.dims):
-            error("Grid", "Invalid inds sized " + str(len(inds)) + " should be length " + str(len(self.dims)))
-        if not all([a < b for a, b in zip(inds, self.dims)]):
-            error("Grid", "Invalid grid inds: " + str(inds))
-        block = self.adjust_grid_inds((self.dims[0], self.dims[1]), (inds[0], inds[1]))
-        shape = (self.arr.shape[0] / block[0], self.arr.shape[1] / block[1]) + block
-        strides = (block[0] * self.arr.strides[0], block[1] * self.arr.strides[1]) + self.arr.strides
-        error("Grid", "need to use inds[2:] to access currect slice of self.arr")
-        cur_arr = self.arr # FIXME
-        return ast(cur_arr, shape=shape, strides=strides)
-
-    def adjust_grid_inds((bx, by), (i,j)):
-        """
-        (bx, by) is the desired block shape
-        (i, j) is the location of the block in the image
-        verifies the the (i,j)th block would not cross the image bounds,
-            and if it would, returns an altered block size
-
-        e.g. image is 7-by-9 => (self.i, self.j) is (3, 3)
-            (bx, by) is (3, 3)
-            (i, j) is (2, 2)
-            => (1, 3)
-        """
-        bx2, by2 = bx, by
-        if i == self.i-1:
-            bx2 = bx - ((self.i * bx) - self.nrows)
-        if j == self.j-1:
-            by2 = by - ((self.j * by) - self.ncols)
-        return bx2, by2
+if __name__ == '__main__':
+    pass

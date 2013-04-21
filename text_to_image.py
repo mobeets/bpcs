@@ -20,13 +20,13 @@ def digits_in_base_as_tuple(x, base):
         cur /= base
     return tuple(reversed(digs))
 
-def get_word_color_map_fcn(words):
+def get_word_color_map_fcn(all_words):
     """
     given a set of words, returns a fcn
         returning an RGB color
         where each word is maximally spaced out from other word colors
     """
-    words = set(words)
+    words = set(all_words)
     words.add(' ') # add space for padding
     ncolors = 256**3
     ncolors_per_word = ncolors/len(words)
@@ -62,6 +62,22 @@ def adjust_words_and_get_dims(words, verbose=False):
     return words, [desired_side, desired_side, 3]
     
 def str_to_words(txt, keep_spaces=False):
+    # if keep_spaces:
+    #     # want each space to be its own word
+    #     space_first = txt[0] == ' '
+    #     words = str_to_words(txt)
+    #     space_chunks = [x for x in re.split('[^ ]', txt) if x] + [' ']
+    #     final = []
+    #     for word, space in zip(words, space_chunks):
+    #         if space_first:
+    #             for i in range(len(space)):
+    #                 final.append(' ')
+    #             final.append(word)
+    #         else:
+    #             final.append(word)
+    #             for i in range(len(space)):
+    #                 final.append(' ')
+    #     return final
     if keep_spaces:
         words = str_to_words(txt)
         spaces = [x for x in re.split('[^ ]', txt) if x] + [' ']
@@ -157,18 +173,17 @@ def test_all():
 if __name__ == '__main__':
     test_all()
 
-    infile = '/Users/mobeets/bpcs-steg/docs/tmp.txt'
-    outfile = '/Users/mobeets/bpcs-steg/docs/tmp.png'
-    txt_to_image(infile, outfile, False)
+    by_char = False
 
-    # infile = '/Users/mobeets/bpcs-steg/docs/tmp1.txt'
-    # outfile = '/Users/mobeets/bpcs-steg/docs/tmp1.png'
-    # txt_to_image(infile, outfile)
+    base_dir = '/Users/mobeets/bpcs-steg/docs/'
+    infiles = ['karenina', 'warandpeace']
+    infiles = ['tmp', 'tmp1', 'tmp2']
 
-    # infile = '/Users/mobeets/bpcs-steg/docs/tmp2.txt'
-    # outfile = '/Users/mobeets/bpcs-steg/docs/tmp2.png'
-    # txt_to_image(infile, outfile)
-
+    infiles = [base_dir + infile + '.txt' for infile in infiles]
+    outfiles = [base_dir + outfile + '.txt' for outfile in outfiles]
+    for infile,outfile in zip(infiles, outfiles):
+        txt_to_image(infile, outfile, by_char)
+    
     # infile = '/Users/mobeets/Desktop/tmp2.png'
     # outfile = '/Users/mobeets/Desktop/tmp2.txt'
-    # image_to_txt(infile, outfile)
+    # image_to_txt(infile, outfile, by_char)
