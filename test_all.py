@@ -1,6 +1,6 @@
 from act_on_image import Params, act_on_image
-from array_bit_plane import pbc_to_cgc, cgc_to_pbc, conjugate, BitPlane
-from bpcs_steg import arr_bpcs_complexity
+from array_bit_plane import pbc_to_cgc, cgc_to_pbc, BitPlane
+from bpcs_steg import arr_bpcs_complexity, conjugate
 from array_message import list_to_grids, grids_to_list, str_to_grids, grids_to_str
 from array_grid import get_next_grid_dims
 
@@ -111,14 +111,21 @@ def test_bitplane_invertibility(arr):
     b3 = BitPlane(arr, False)
     assert b3.stack(b3.slice(8)) == arr
 
-def test_conjugate_invertibility(arr):
-    assert conjugate(conjugate(arr)) == arr
+def test_conjugate_invertibility():
+    arr = np.array([[0,1,0,1,1,1,0,1,0], [1,1,1,1,0,0,1,1,0], [0,0,1,1,1,0,0,1,0]])
+    assert conjugate(conjugate(arr)).tolist() == arr.tolist()
+
+def test_conjugate():
+    arr = np.array([[0,1,0,1,1,1,0,1,0], [1,1,1,1,0,0,1,1,0], [0,0,1,1,1,0,0,1,0]])
+    alpha = arr_bpcs_complexity(arr)
+    arr_conj = conjugate(arr)
+    alpha_conj = arr_bpcs_complexity(arr_conj)
+    assert alpha == 1 - alpha_conj
 
 def dummy_action_fcn(grid, params):
     # iterate through grids, do whatever...
     # print grid.block_view((0,0,0))
     # print grid.block_view((61,0,0))
-    #
     pass
 
 def get_dummy_params():
@@ -135,6 +142,8 @@ def test_null_action(infile):
     assert f1 == f2, show_html_diff((f1, 'OG'), (f2, 'NEW'))
 
 def test_all():
+    test_conjugate_invertibility()
+    test_conjugate()
     test_list_to_grids()
     test_list_to_grids_1()
     test_grids_to_list()

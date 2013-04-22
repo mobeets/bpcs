@@ -1,6 +1,8 @@
 import numpy as np
 
 def xor_lists(a, b):
+    # consider using np.bitwise_xor()
+    # source: http://docs.scipy.org/doc/numpy/reference/generated/numpy.bitwise_xor.html#numpy.bitwise_xor
     assert len(a) == len(b)
     return [x ^ y for x,y in zip(a,b)]
 
@@ -71,16 +73,6 @@ def cgc_to_pbc(arr):
         return np.array(new_planes).transpose()
     return arr_map(arr, cgc_to_pbc_mapper)
 
-def conjugate(arr):
-    """
-    arr is a numpy array
-
-    conjugates arr so that its complexity, s, is 1-s
-    assert conjugate(conjugate(arr)) == arr
-    """
-    # FIXME
-    return arr
-
 class BitPlane:
     """
     slices or stacks values in a numpy array's last dimension
@@ -103,8 +95,11 @@ class BitPlane:
         nbits is int
         returns val as list of int, each either 0 or 1,
             representing val in base-2 using nbits
+
+        http://docs.scipy.org/doc/numpy/reference/generated/numpy.base_repr.html#numpy.base_repr
         """
-        return [int(x) for x in bin(val)[2:].zfill(nbits)]
+        return [int(x) for x in np.base_repr(val, nbits)]
+        # return [int(x) for x in bin(val)[2:].zfill(nbits)]
 
     def slice(self, nbits):
         """
