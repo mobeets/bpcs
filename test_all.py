@@ -103,13 +103,24 @@ def test_pbc_to_cgc_invertibility():
     f_finv_arr = f(finv_arr)
     assert f_finv_arr.tolist() == arr.tolist()
 
-def test_bitplane_invertibility(arr):
-    b1 = BitPlane(arr, True)
-    assert b1.stack(b1.slice(8)) == arr
-    b1 = BitPlane(arr, True)
-    assert b1.stack(b1.slice(5)) == arr
-    b3 = BitPlane(arr, False)
-    assert b3.stack(b3.slice(8)) == arr
+def test_bitplane_invertibility():
+    arr = np.array([[14,24,9,0],[1,32,3,5],[14,5,3,2],[16,22,1,1],[1,200,180,53],[9,23,111,20]])
+    arr.resize([4,3,2])
+
+    grayed = False
+    b1 = BitPlane(arr, grayed)
+    b2 = b1.slice(8)
+    assert BitPlane(b2, grayed).stack().tolist() == arr.tolist()
+
+    grayed = False
+    b1 = BitPlane(arr, grayed)
+    b2 = b1.slice(15)
+    assert BitPlane(b2, grayed).stack().tolist() == arr.tolist()
+
+    grayed = True
+    b1 = BitPlane(arr, grayed)
+    b2 = b1.slice(8)
+    assert BitPlane(b2, grayed).stack().tolist() == arr.tolist()
 
 def test_conjugate_invertibility():
     arr = np.array([[0,1,0,1,1,1,0,1,0], [1,1,1,1,0,0,1,1,0], [0,0,1,1,1,0,0,1,0]])
@@ -142,6 +153,7 @@ def test_null_action(infile):
     assert f1 == f2, show_html_diff((f1, 'OG'), (f2, 'NEW'))
 
 def test_all():
+    test_bitplane_invertibility()
     test_conjugate_invertibility()
     test_conjugate()
     test_list_to_grids()

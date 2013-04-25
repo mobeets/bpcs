@@ -1,4 +1,5 @@
 import numpy as np
+import itertools
 
 def xor_lists(a, b):
     # consider using np.bitwise_xor()
@@ -87,7 +88,7 @@ class BitPlane:
         vals is list of int, each val either 0 or 1
         returns the decimal value from concatenating vals
         """
-        return int(''.join([str(x) for x in vals]),2)
+        return int(''.join([str(x) for x in vals]), 2)
 
     def decimal_to_bin_strs(self, val, nbits):
         """
@@ -95,27 +96,33 @@ class BitPlane:
         nbits is int
         returns val as list of int, each either 0 or 1,
             representing val in base-2 using nbits
-
-        http://docs.scipy.org/doc/numpy/reference/generated/numpy.base_repr.html#numpy.base_repr
         """
-        return [int(x) for x in np.base_repr(val, nbits)]
-        # return [int(x) for x in bin(val)[2:].zfill(nbits)]
+        return [int(x) for x in bin(val)[2:].zfill(nbits)[:nbits]]
 
     def slice(self, nbits):
         """
-        converts the values in the last dimension of self.arr into binary
-            and then splits them into new arrays for each bit
+        converts the values in self.arr into binary
+           so that there is a new dimension for each bit of each original value
         """
-        # FIXME
+        basearr = [self.decimal_to_bin_strs(i, nbits) for i in self.arr.reshape(-1)]
+        tmparr = np.reshape(basearr, self.arr.shape + (nbits,))
         if self.gray:
-            self.arr = pbc_to_cgc(self.arr)
-        return self.arr
+            tmparr = pbc_to_cgc(tmparr)
+        assert tmparr.shape == self.arr.shape + (nbits,)
+        return tmparr
 
     def stack(self):
         """
         the reverse of slicing
         """
+        tmparr = self.arr
         if self.gray:
-            self.arr = cgc_to_pbc(self.arr)
-        # FIXME
-        return self.arr
+            tmparr = cgc_to_pbc(tmparr)
+        def iterate_all_but_last_dim(arr):
+            " generator for all indices of arr, ignoring the last dimension "
+            all_inds = [range(dim_size) for dim_size in arr.shape]
+            for ind in itertools.product(*all_inds[:-1]):
+                yield ind
+        tmparr = np.reshape([self.bin_strs_to_decimal(tmparr[ind]) for ind in iterate_all_but_last_dim(tmparr)], tmparr.shape[:-1])
+        assert tmparr.shape == self.arr.shape[:-1]
+        return tmparr
