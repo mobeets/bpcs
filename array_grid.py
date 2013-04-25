@@ -1,5 +1,6 @@
 import numpy as np
 import itertools
+from logger import log
 
 def get_next_grid_dims(arr, dims):
     """
@@ -30,10 +31,17 @@ def get_next_grid_dims(arr, dims):
 
     nlayers = len(arr.shape)-2
     assert nlayers > 0
-    zs = itertools.product(*[range(arr.shape[i+2]) for i in range(nlayers)])
+    inds = [range(arr.shape[i+2]) for i in range(nlayers)]
+    zs = itertools.product(*inds)
+    ngrids = reduce(lambda x,y: x*y, [len(x) for x in inds], 1)*len(xs)*len(ys)
+    log.critical('Found {0} grids'.format(ngrids))
+    i = 0
     for z in zs:
         for (xleft, xright) in xs:
             for (yleft, yright) in ys:
+                i += 1
+                if i % 10000 == 0:
+                    log.critical('Grid {0} of {1}'.format(i, ngrids))
                 yield [slice(xleft, xright), slice(yleft, yright)] + list(z)
 
 if __name__ == '__main__':

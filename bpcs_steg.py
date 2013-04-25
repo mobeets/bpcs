@@ -2,6 +2,8 @@ from act_on_image import act_on_image, Params
 from array_message import read_message_grids, get_next_message_grid_sized
 from array_grid import get_next_grid_dims
 import numpy as np
+import matplotlib.pyplot as plt
+from logger import log
 
 def arr_bpcs_complexity(arr):
     """
@@ -40,12 +42,32 @@ def conjugate(arr):
     bc = 1-wc # black pixel at origin
     return np.array([[wc[i,j] if arr[i,j] else bc[i,j] for j, cell in enumerate(row)] for i, row in enumerate(arr)])
 
-def eliminate_image_complexity(arr, params):
+def histogram_of_complexities(arr1, arr2, params):
+    log.critical('Creating histograms of image complexity...')
+    vals1 = [arr_bpcs_complexity(arr1[dims]) for dims in get_next_grid_dims(arr1, params.grid_size)]
+    vals2 = [arr_bpcs_complexity(arr2[dims]) for dims in get_next_grid_dims(arr2, params.grid_size)]
+    fig = plt.figure()
+    ax = fig.add_subplot(211)
+    n, bins, patches = ax.hist(vals1, 200, facecolor='red', alpha=0.75)
+    ax = fig.add_subplot(212)
+    n, bins, patches = ax.hist(vals2, 200, facecolor='red', alpha=0.75)
+    plt.show()
+
+def flip_image_complexity(arr, params):
     alpha = params.custom['alpha']
+    comp = params.custom['comparator']
+    # arr1 = np.copy(arr)
+    n = 0
     for dims in get_next_grid_dims(arr, params.grid_size):
         grid = arr[dims]
-        if arr_bpcs_complexity(grid) < alpha:
-            grid = conjugate(grid)
+        if comp(arr_bpcs_complexity(grid), alpha): # < or >
+            n += 1
+            init_grid = np.copy(grid)
+            arr[dims] = conjugate(grid)
+            assert abs((1 - arr_bpcs_complexity(init_grid)) - arr_bpcs_complexity(grid)) < 0.01
+            assert not(arr[dims].tolist() == init_grid.tolist() and alpha != 0.5)
+    log.critical('Conjugated {0} grids'.format(n))
+    # histogram_of_complexities(arr1, arr, params)
     return arr
 
 def embed_message_in_vessel(arr, params):
@@ -72,11 +94,17 @@ def embed_message_in_vessel(arr, params):
 
 def get_params(action):
     # ['nbits_per_layer', 'grid_size', 'as_rgb', 'gray', 'modifier', 'custom']
+    if action == 'eliminate_image_simplicity':
+        params = Params(8, (8,8), True, True, flip_image_complexity, {'alpha': 0.3, 'comparator': lambda x,thresh: x<thresh})
     if action == 'eliminate_image_complexity':
-        params = Params(8, (8,8), True, True, eliminate_image_complexity, {'alpha': 0.3})
+        params = Params(8, (8,8), True, True, flip_image_complexity, {'alpha': 0.7, 'comparator': lambda x,thresh: x>thresh})
     elif action == 'bpcs':
         params = Params(8, (8,8), True, True, embed_message_in_vessel, {'alpha': 0.3, 'message_grids': ''})
     return params
+
+def remove_simplicity(infile, outfile):
+    params = get_params('eliminate_image_simplicity')
+    act_on_image(infile, outfile, params)
 
 def remove_complexity(infile, outfile):
     params = get_params('eliminate_image_complexity')
@@ -89,5 +117,6 @@ def bpcs_steg(infile, messagefile, outfile):
     act_on_image(infile, outfile, params)
 
 if __name__ == '__main__':
-    infile = 'docs/vessel.png'
-    remove_complexity(infile, infile.replace('.', '_old.'))
+    infile = 'docs/vessel_small.png'
+    remove_complexity(infile, infile.replace('.', '_simplified_cgc_p7.'))
+    # remove_simplicity(infile, infile.replace('.', '_complexified.'))

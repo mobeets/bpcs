@@ -1,5 +1,6 @@
 import numpy as np
 import itertools
+from logger import log
 
 def xor_lists(a, b):
     # consider using np.bitwise_xor()
@@ -37,6 +38,7 @@ def pbc_to_cgc(arr):
     assert pbc_to_cgc(cgc_to_pbc(arr)) == arr
     assert cgc_to_pbc(pbc_to_cgc(arr)) == arr
     """
+    log.critical('Graying...')
     def pbc_to_cgc_mapper(planes):
         """
         each plane, e.g. [0,1,1,1,0,0,0,1], represents a layer (color) of the pixel
@@ -61,6 +63,7 @@ def cgc_to_pbc(arr):
     assert pbc_to_cgc(cgc_to_pbc(arr)) == arr
     assert cgc_to_pbc(pbc_to_cgc(arr)) == arr
     """
+    log.critical('Ungraying...')
     def cgc_to_pbc_mapper(planes):
         """
         each plane, e.g. [0,1,1,1,0,0,0,1], represents a layer (color) of the pixel
@@ -104,6 +107,7 @@ class BitPlane:
         converts the values in self.arr into binary
            so that there is a new dimension for each bit of each original value
         """
+        log.critical('Slicing...')
         basearr = [self.decimal_to_bin_strs(i, nbits) for i in self.arr.reshape(-1)]
         tmparr = np.reshape(basearr, self.arr.shape + (nbits,))
         if self.gray:
@@ -123,6 +127,7 @@ class BitPlane:
             all_inds = [range(dim_size) for dim_size in arr.shape]
             for ind in itertools.product(*all_inds[:-1]):
                 yield ind
+        log.critical('Stacking...')
         tmparr = np.reshape([self.bin_strs_to_decimal(tmparr[ind]) for ind in iterate_all_but_last_dim(tmparr)], tmparr.shape[:-1])
         assert tmparr.shape == self.arr.shape[:-1]
         return tmparr

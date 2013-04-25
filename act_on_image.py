@@ -1,9 +1,10 @@
 import numpy as np
 import Image # source: http://www.pythonware.com/library/pil/handbook/image.htm
+from collections import namedtuple
 
 from array_bit_plane import BitPlane
+from logger import log
 
-from collections import namedtuple
 Params = namedtuple('ImageParams', ['nbits_per_layer', 'grid_size', 'as_rgb', 'gray', 'modifier', 'custom'])
 get_im_mode = lambda is_rgb: 'RGB' if is_rgb else 'L'
 
@@ -29,10 +30,13 @@ def bitplane_then_act(im, params):
         and returns the resulting new image
     """
     cur = image_to_array(im)
+    log.critical('Loaded image as array with shape {0}'.format(cur.shape))
     cur = BitPlane(cur, params.gray).slice(params.nbits_per_layer)
+    log.critical('Modifying...')
     cur = params.modifier(cur, params)
     cur = BitPlane(cur, params.gray).stack()
     new_im = array_to_image(cur)
+    log.critical('Loaded new array as image')
     return new_im
 
 def act_on_image(infile, outfile, params=DEFAULT_PARAMS):
