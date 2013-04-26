@@ -95,9 +95,9 @@ def embed_message_in_vessel(arr, params):
 def get_params(action):
     # ['nbits_per_layer', 'grid_size', 'as_rgb', 'gray', 'modifier', 'custom']
     if action == 'eliminate_image_simplicity':
-        params = Params(8, (8,8), True, True, flip_image_complexity, {'alpha': 0.3, 'comparator': lambda x,thresh: x<thresh})
-    if action == 'eliminate_image_complexity':
-        params = Params(8, (8,8), True, True, flip_image_complexity, {'alpha': 0.7, 'comparator': lambda x,thresh: x>thresh})
+        params = Params(8, (8,8), True, False, flip_image_complexity, {'alpha': 0.3, 'comparator': lambda x,thresh: x<thresh})
+    elif action == 'eliminate_image_complexity':
+        params = Params(8, (8,8), True, False, flip_image_complexity, {'alpha': 0.7, 'comparator': lambda x,thresh: x>thresh})
     elif action == 'bpcs':
         params = Params(8, (8,8), True, True, embed_message_in_vessel, {'alpha': 0.3, 'message_grids': ''})
     return params
@@ -110,6 +110,20 @@ def remove_complexity(infile, outfile):
     params = get_params('eliminate_image_complexity')
     act_on_image(infile, outfile, params)
 
+def alpha_batch(infile, name, action):
+    params = get_params(action)
+    for alpha in [a/10.0 for a in range(10)]:
+        params.custom['alpha'] = alpha
+        outfile = infile.replace('.', '_{2}_{1}_p{0}.'.format(int(alpha*10), 'cgc' if params.gray else 'pbc', name))
+        log.critical('---------------------\n' + outfile + '\n---------------------')
+        act_on_image(infile, outfile, params)
+
+def batch(infile):
+    actions = ['eliminate_image_simplicity', 'eliminate_image_complexity']
+    for action in actions:
+        name = 'complexified' if 'simpl' in action else 'simplified'
+        alpha_batch(infile, name, action)
+
 def bpcs_steg(infile, messagefile, outfile):
     params = get_params('bpcs')
     message_grids = read_message_grids(messagefile, params)
@@ -118,5 +132,6 @@ def bpcs_steg(infile, messagefile, outfile):
 
 if __name__ == '__main__':
     infile = 'docs/vessel_small.png'
-    remove_complexity(infile, infile.replace('.', '_simplified_cgc_p7.'))
+    batch(infile)
+    # remove_complexity(infile, infile.replace('.', '_simplified_cgc_p7.'))
     # remove_simplicity(infile, infile.replace('.', '_complexified.'))
