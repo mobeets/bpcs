@@ -68,7 +68,7 @@ def flip_image_complexity(arr, params):
             assert not(arr[dims].tolist() == init_grid.tolist() and alpha != 0.5)
     log.critical('Conjugated {0} grids'.format(n))
     # histogram_of_complexities(arr1, arr, params)
-    return arr
+    return arr, n
 
 def embed_message_in_vessel(arr, params):
     alpha = params.custom['alpha']
@@ -90,14 +90,14 @@ def embed_message_in_vessel(arr, params):
         i += 1
         # replace grid with message_grid
         grid = cur_message
-    return arr
+    return arr, None
 
 def get_params(action):
     # ['nbits_per_layer', 'grid_size', 'as_rgb', 'gray', 'modifier', 'custom']
     if action == 'eliminate_image_simplicity':
-        params = Params(8, (8,8), True, False, flip_image_complexity, {'alpha': 0.3, 'comparator': lambda x,thresh: x<thresh})
+        params = Params(8, (8,8), True, True, flip_image_complexity, {'alpha': 0.3, 'comparator': lambda x,thresh: x<thresh})
     elif action == 'eliminate_image_complexity':
-        params = Params(8, (8,8), True, False, flip_image_complexity, {'alpha': 0.7, 'comparator': lambda x,thresh: x>thresh})
+        params = Params(8, (8,8), True, False, flip_image_complexity, {'alpha': 0.7, 'comparator': lambda x,thresh: x>=thresh})
     elif action == 'bpcs':
         params = Params(8, (8,8), True, True, embed_message_in_vessel, {'alpha': 0.3, 'message_grids': ''})
     return params
@@ -110,19 +110,35 @@ def remove_complexity(infile, outfile):
     params = get_params('eliminate_image_complexity')
     act_on_image(infile, outfile, params)
 
-def alpha_batch(infile, name, action):
+def alpha_batch(infile, name, action, alphas):
     params = get_params(action)
-    for alpha in [a/10.0 for a in range(10)]:
+    nflippeds = {}
+    for alpha in alphas:
         params.custom['alpha'] = alpha
-        outfile = infile.replace('.', '_{2}_{1}_p{0}.'.format(int(alpha*10), 'cgc' if params.gray else 'pbc', name))
+        outfile = infile.replace('.', '_{2}_{1}_p{0}.'.format(int(alpha*100), 'cgc' if params.gray else 'pbc', name))
+        # print alpha
         log.critical('---------------------\n' + outfile + '\n---------------------')
-        act_on_image(infile, outfile, params)
+        nflipped = act_on_image(infile, outfile, params)
+        nflippeds[(name, alpha)] = nflipped
+    return nflippeds
 
+def write_stats(outfile, stats):
+    out = ''
+    for (name, alpha), n in stats.iteritems():
+        out += '{0},{1},{2}\n'.format(name, alpha, n)
+    with open(outfile, 'w') as f:
+        f.write(out)
+    
 def batch(infile):
-    actions = ['eliminate_image_simplicity', 'eliminate_image_complexity']
+    actions = ['eliminate_image_complexity']
+    # actions = ['eliminate_image_simplicity', 'eliminate_image_complexity']
+    alphas = [0.3 + (a/100.0) for a in range(20)]
+    stats = {}
     for action in actions:
         name = 'complexified' if 'simpl' in action else 'simplified'
-        alpha_batch(infile, name, action)
+        cur_stats = alpha_batch(infile, name, action, alphas)
+        stats.update(cur_stats)
+    write_stats(infile.replace('.png', '_stats_pbc.txt'), stats)
 
 def bpcs_steg(infile, messagefile, outfile):
     params = get_params('bpcs')

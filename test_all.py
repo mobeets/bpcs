@@ -1,11 +1,33 @@
 from act_on_image import Params, act_on_image
 from array_bit_plane import pbc_to_cgc, cgc_to_pbc, BitPlane
 from bpcs_steg import arr_bpcs_complexity, conjugate
-from array_message import list_to_grids, grids_to_list, str_to_grids, grids_to_str
+from array_message import list_to_grids, grids_to_list, str_to_grids, grids_to_str, get_next_message_grid_sized
 from array_grid import get_next_grid_dims
 
 from test_utils import show_html_diff
 import numpy as np
+
+def test_get_next_message_grid_sized_1():
+    arr = np.array([[1,0,0,1], [0,1,1,0], [1,1,1,1]])
+    dims = [2,2]
+    grids = []
+    cur_grid = True
+    while arr.size > 0:
+        cur_grid, arr = get_next_message_grid_sized(arr, dims)
+        if cur_grid.size > 0:
+            grids.append(cur_grid.tolist())
+    assert grids == [[[1,0], [0,1]], [[0,1], [1,0]], [[1,1], [1,1]]], grids
+
+def test_get_next_message_grid_sized_2():
+    arr = np.array([[1,0,0,1], [0,1,1,0], [1,1,1,1], [0,1,0,0]])
+    dims = [3,2]
+    grids = []
+    cur_grid = True
+    while arr.size > 0:
+        cur_grid, arr = get_next_message_grid_sized(arr, dims)
+        if cur_grid.size > 0:
+            grids.append(cur_grid.tolist())
+    assert grids == [[[1,0], [0,1], [0,1]], [[1,0], [1,1],[1,1]], [[0,1],[0,0],[0,0]]], grids
 
 def test_get_next_grid_dims():
     arr = np.arange(96)
@@ -153,6 +175,8 @@ def test_null_action(infile):
     assert f1 == f2, show_html_diff((f1, 'OG'), (f2, 'NEW'))
 
 def test_all():
+    test_get_next_message_grid_sized_1()
+    test_get_next_message_grid_sized_2()
     test_bitplane_invertibility()
     test_conjugate_invertibility()
     test_conjugate()

@@ -33,16 +33,17 @@ def bitplane_then_act(im, params):
     log.critical('Loaded image as array with shape {0}'.format(cur.shape))
     cur = BitPlane(cur, params.gray).slice(params.nbits_per_layer)
     log.critical('Modifying...')
-    cur = params.modifier(cur, params)
+    cur, stats = params.modifier(cur, params)
     cur = BitPlane(cur, params.gray).stack()
     new_im = array_to_image(cur)
     log.critical('Loaded new array as image')
-    return new_im
+    return new_im, stats
 
 def act_on_image(infile, outfile, params=DEFAULT_PARAMS):
     im = load_image(infile, params.as_rgb)
-    new_im = bitplane_then_act(im, params)
+    new_im, stats = bitplane_then_act(im, params)
     write_image(outfile, new_im)
+    return stats
 
 if __name__ == '__main__':
     infile = 'docs/vessel.png'

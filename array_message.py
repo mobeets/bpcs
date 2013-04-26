@@ -63,7 +63,18 @@ def grids_to_str(grids):
     return ''.join([byte_to_char(byte) for byte in bytes])
 
 def get_next_message_grid_sized(arr, dims):
-    pass
+    """
+    returns a sub-array of arr with shape of dims
+    """
+    if arr.size == 0:
+        raise Exception("cannot get a grid from empty array")
+    n = reduce(lambda x,y: x*y, dims, 1)
+    arr = arr.reshape(-1).tolist()
+    if len(arr) < n:
+        arr += [0]*(len(arr) - n)
+    cur_arr, arr = np.array(arr[:n]), np.array(arr[n:])
+    cur_arr.resize(dims)
+    return cur_arr, arr
 
 def read_message_grids(messagefile, params):
     """
