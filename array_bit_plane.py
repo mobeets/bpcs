@@ -3,17 +3,8 @@ import itertools
 from logger import log
 
 def xor_lists(a, b):
-    # consider using np.bitwise_xor()
-    # source: http://docs.scipy.org/doc/numpy/reference/generated/numpy.bitwise_xor.html#numpy.bitwise_xor
     assert len(a) == len(b)
     return [x ^ y for x,y in zip(a,b)]
-
-"""
-TO CODE:
-    * conjugate
-    * BitPlane.slice()
-    * BitPlane.stack()
-"""
 
 def arr_map(arr, fcn):
     """

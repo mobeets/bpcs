@@ -1,4 +1,4 @@
-from act_on_image import Params, act_on_image
+from act_on_image import ActOnImage#Params, act_on_image
 from array_bit_plane import pbc_to_cgc, cgc_to_pbc, BitPlane
 from bpcs_steg import arr_bpcs_complexity, conjugate
 from array_message import list_to_grids, grids_to_list, str_to_grids, grids_to_str, get_next_message_grid_sized
@@ -63,7 +63,7 @@ def test_get_next_grid_dims():
 
 def test_grids_to_str_invertibility():
     message = 'hello there asfasdf asdfasdf asdfasdf asd,f asd; asdf !fdf'
-    grids = str_to_grids(message, get_dummy_params())
+    grids = str_to_grids(message, (8,8))
     message_out = grids_to_str(grids)
     assert message_out[:len(message)] == message
 
@@ -155,24 +155,20 @@ def test_conjugate():
     alpha_conj = arr_bpcs_complexity(arr_conj)
     assert alpha == 1 - alpha_conj
 
-def dummy_action_fcn(grid, params):
-    # iterate through grids, do whatever...
-    # print grid.block_view((0,0,0))
-    # print grid.block_view((61,0,0))
-    pass
-
-def get_dummy_params():
-    # ['nbits_per_layer', 'grid_size', 'as_rgb', 'gray', 'modifier', 'custom']
-    return Params(8, (8,8), True, True, dummy_action_fcn, {})
-
 def test_null_action(infile):
     """ makes sure that dummy_fcns won't change image by gridding and/or bitplaning """
-    action = 'dummy'
-    outfile = infile.replace('.', '_' + action + '.')
-    act_on_image(infile, outfile, get_dummy_params())
-    f1 = open(infile).read()
-    f2 = open(outfile).read()
-    assert f1 == f2, show_html_diff((f1, 'OG'), (f2, 'NEW'))
+    outfile = infile.replace('.', '_dummy.')
+    class DummyActOnImage(ActOnImage):
+        def modify(self):
+            return np.array(self.arr, copy=True)
+
+    for x,y,z in [(a,b,c) for a in [True,False] for b in [True,False] for c in [True,False]]:
+        x = DummyActOnImage(infile, x, y, z, 8)
+        arr = x.modify()
+        x.write(outfile, arr)
+        f1 = open(infile).read()
+        f2 = open(outfile).read()
+        assert f1 == f2, show_html_diff((f1, 'OG'), (f2, 'NEW'))
 
 def test_all():
     test_get_next_message_grid_sized_1()
@@ -190,8 +186,8 @@ def test_all():
     test_pbc_to_cgc_invertibility()
     test_bpcs_complexity()
     test_get_next_grid_dims()
-    infile = 'docs/vessel.png'
-    # test_null_action(infile)
+    infile = 'docs/vessel_small.png'
+    test_null_action(infile)
 
 if __name__ == '__main__':
     test_all()

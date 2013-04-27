@@ -1,4 +1,3 @@
-import numpy as np
 import itertools
 from logger import log
 
