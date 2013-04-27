@@ -1,6 +1,7 @@
-from act_on_image import ActOnImage#Params, act_on_image
+from act_on_image import ActOnImage
 from array_bit_plane import pbc_to_cgc, cgc_to_pbc, BitPlane
 from bpcs_steg import arr_bpcs_complexity, conjugate
+
 from array_message import list_to_grids, grids_to_list, str_to_grids, grids_to_str, get_next_message_grid_sized
 from array_grid import get_next_grid_dims
 
@@ -155,15 +156,17 @@ def test_conjugate():
     alpha_conj = arr_bpcs_complexity(arr_conj)
     assert alpha == 1 - alpha_conj
 
-def test_null_action(infile):
+def test_null_action():
     """ makes sure that dummy_fcns won't change image by gridding and/or bitplaning """
+    infile = 'docs/vessel_mini.png'
     outfile = infile.replace('.', '_dummy.')
     class DummyActOnImage(ActOnImage):
         def modify(self):
             return np.array(self.arr, copy=True)
 
     for x,y,z in [(a,b,c) for a in [True,False] for b in [True,False] for c in [True,False]]:
-        x = DummyActOnImage(infile, x, y, z, 8)
+        print 'as_rgb={0}, bitplane={1}, gray={2}'.format(x,y,z)
+        x = DummyActOnImage(infile, as_rgb=x, bitplane=y, gray=z, nbits_per_layer=8)
         arr = x.modify()
         x.write(outfile, arr)
         f1 = open(infile).read()
@@ -186,8 +189,7 @@ def test_all():
     test_pbc_to_cgc_invertibility()
     test_bpcs_complexity()
     test_get_next_grid_dims()
-    infile = 'docs/vessel_small.png'
-    test_null_action(infile)
+    # test_null_action()
 
 if __name__ == '__main__':
     test_all()

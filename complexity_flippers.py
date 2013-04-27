@@ -45,10 +45,12 @@ class SimplifyImage(ActOnImage):
 
 def complexify(infile, outfile, alpha):
     x = ComplexifyImage(infile, as_rgb=True, bitplane=True, gray=True, nbits_per_layer=8)
-    arr = x.modify(alpha)
+    arr, stats = x.modify(alpha)
     x.write(outfile, arr)
+    return stats
 
 def simplify(infile, outfile, alpha):
     x = SimplifyImage(infile, as_rgb=True, bitplane=True, gray=True, nbits_per_layer=8)
-    arr = x.modify(alpha)
+    arr, stats = x.modify(alpha)
     x.write(outfile, arr)
+    return stats
