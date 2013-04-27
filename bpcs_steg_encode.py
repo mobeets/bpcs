@@ -58,8 +58,8 @@ def embed_message_in_vessel(arr, alpha, message, grid_size):
 class BPCSEncodeImage(ActOnImage):
     def modify(self, messagefile, alpha):
         new_arr = np.array(self.arr, copy=True)
-        read_message_grids(messagefile, (8,8))
-        return embed_message_in_vessel(new_arr, alpha, message, (8,8))
+        message_grids = read_message_grids(messagefile, (8,8))
+        return embed_message_in_vessel(new_arr, alpha, message_grids, (8,8))
 
 def bpcs_steg_encode(infile, messagefile, outfile, alpha):
     BPCSEncodeImage(infile, as_rgb=True, bitplane=True, gray=True, nbits_per_layer=8)
@@ -67,7 +67,7 @@ def bpcs_steg_encode(infile, messagefile, outfile, alpha):
     x.write(outfile, arr)
 
 if __name__ == '__main__':
-    infile = 'docs/vessel_small.png'
+    infile = 'docs/vessel_mini.png'
     messagefile = 'docs/message.txt'
     outfile = infile.replace('.', '_encoded.')
     alpha 0.45
