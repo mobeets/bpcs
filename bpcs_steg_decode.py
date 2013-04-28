@@ -36,11 +36,17 @@ def test_decode_1():
     outfile = 'docs/secretary-general.txt'
     bpcs_steg_decode(infile, outfile, alpha)
 
-def test_decode():
+def decode_vessel():
+    infile = 'docs/vessel_encoded.png'
+    outfile = 'docs/vessel_message.txt'
+    alpha = 0.45
+    bpcs_steg_decode(infile, outfile, alpha)
+
+def decode_mini_vessel():
     infile = 'docs/vessel_mini_encoded.png'
-    outfile = infile.replace('_encoded.png', '_message.txt')
+    outfile = 'docs/vessel_mini_message.txt'
     alpha = 0.45
     bpcs_steg_decode(infile, outfile, alpha)
 
 if __name__ == '__main__':
-    test_decode()
+    decode_mini_vessel()

@@ -71,10 +71,13 @@ def simplify(infile, outfile, alpha):
     x.write(outfile, arr)
     return stats
 
-if __name__ == '__main__':
-    infile = 'docs/vessel_mini.png'
-    outfile = infile.replace('.png', '_complexity_hist.png')
+def capacity():
+    infile = 'docs/vessel.png'
+    outfile = 'docs/vessel_complexity_hist.png'
     alpha = 0.45
     greater = lambda x,thresh: x>=thresh
-    lesser = lambda x,thresh: x<thresh
+    # lesser = lambda x,thresh: x<thresh
     histogram(infile, outfile, alpha, greater)
+
+if __name__ == '__main__':
+    capacity()

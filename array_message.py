@@ -22,7 +22,9 @@ def get_next_message_grid_sized(arr, dims, min_alpha=None):
     n = reduce(lambda x,y: x*y, dims, 1)
     arr = arr.reshape(-1).tolist()
     if min_alpha:
-        arr = get_conj_grid_prefix(dims, min_alpha) + arr
+        prefix = get_conj_grid_prefix(dims, min_alpha)
+        assert len(prefix) < n
+        arr = prefix + arr
     if len(arr) < n:
         arr += [0]*(len(arr) - n)
     cur_arr, arr = np.array(arr[:n]), np.array(arr[n:])
@@ -125,28 +127,21 @@ def get_message_grid_from_grids(mgrids, conj_map):
 
 def get_n_message_grids(nbits_per_map, ngrids):
     """
+    nbits_per_map is list, specifying the number of non-trash bits in each grid if it were a conj_map (given its shape)
+    ngrids is the total number of grids, be they message or conj_map
+
     want to find x, the number of message grids, and y, the number of conj_map grids
-        s.t. ngrids=x+y and nbits_per_map*(y-1) < x <= nbits_per_map*y
-    e.g. if x=34, and nbits_per_map=64, then ngrids=35, x=34, and y=1 because 0 < 34 < 64
-    e.g. if x=160, and nbits_per_map=60, then ngrids=163, x=160, and y=3 because 2*60 < 160 < 3*60
+        s.t. ngrids=x+y and sum(nbits_per_map[-(y-1)]) < x <= sum(nbits_per_map[-y:])
+    e.g. if x=34, and nbits_per_map=64 for each conj_map, then ngrids=35, x=34, and y=1 because 0 < 34 < 64
+    e.g. if x=160, and nbits_per_map=60 for each conj_map, then ngrids=163, x=160, and y=3 because 2*60 < 160 < 3*60
     """
     x, y = ngrids-1, 1
-    is_valid = lambda x, y, ngrids, nbits_per_map: ngrids==x+y and (nbits_per_map*(y-1) < x <= nbits_per_map*y)
+    is_valid = lambda x, y, ngrids, nbits_per_map: ngrids==x+y and sum(nbits_per_map[-(y-1):]) < x <= sum(nbits_per_map[-y:])
     while not is_valid(x, y, ngrids, nbits_per_map):
         x, y = x-1, y+1
     assert x > 0
     assert y > 0
     return x
-
-def get_conj_map(cgrids, nbits_per_map):
-    """
-    n.b. some percent of each conj_map grid will be junk bits added to keep complexity above alpha
-    """
-    nignore = cgrids[0].size - nbits_per_map
-    cgrids = [grid.reshape(-1).tolist()[nignore:] for grid in cgrids]
-    conj_map = np.hstack(cgrids).reshape(-1).tolist()
-    assert len(conj_map) == nbits_per_map*len(cgrids)
-    return conj_map
 
 def separate_conj_map_from_message(grids, alpha):
     """
@@ -158,14 +153,25 @@ def separate_conj_map_from_message(grids, alpha):
     if not grids:
         return [], []
 
-    dims = grids[0].shape
-    nignore = len(get_conj_grid_prefix(dims, alpha))
-    nbits_per_map = reduce(lambda x,y: x*y, dims, 1) - nignore
+    get_nignored = lambda grid: len(get_conj_grid_prefix((grid.shape[0], grid.shape[1]), alpha))
+    get_nbits_per_map = lambda grid: grid.shape[0]*grid.shape[1] - get_nignored(grid)
+    nbits_per_map = [get_nbits_per_map(grid) for grid in grids]
 
     ngrids = len(grids)
     x = get_n_message_grids(nbits_per_map, ngrids)
     log.critical('Found {0} message grids and {1} conjugation maps'.format(x, ngrids-x))
-    return grids[:x], grids[x:], nbits_per_map
+    return grids[:x], grids[x:], nbits_per_map[x:]
+
+def get_conj_map(cgrids, nbits_per_map):
+    """
+    cgrids is list of np.arrays, each of them a conjugation map
+    nbits_per_map is a list where the ith element stores the number of bits in the ith conj_map to keep
+        since some percent of each conj_map grid will be junk bits added to keep complexity above alpha
+    """
+    cgrids = [grid.reshape(-1).tolist()[-nbits_per_map[i]:] for i, grid in enumerate(cgrids)]
+    conj_map = np.hstack(cgrids).reshape(-1).tolist()
+    assert len(conj_map) == sum(nbits_per_map), '{0} != {1}'.format(len(conj_map), sum(nbits_per_map))
+    return conj_map
 
 def write_conjugated_message_grids(outfile, grids, alpha):
     messages, conj_map_grids, nbits_per_map = separate_conj_map_from_message(grids, alpha)

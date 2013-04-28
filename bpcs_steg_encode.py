@@ -91,9 +91,19 @@ def bpcs_steg_encode(infile, messagefile, outfile, alpha):
     arr = x.modify(messagefile, alpha)
     x.write(outfile, arr)
 
-if __name__ == '__main__':
-    infile = 'docs/vessel_mini.png'
-    messagefile = 'docs/message.txt'
-    outfile = infile.replace('.', '_encoded.')
+def encode_vessel():
+    infile = 'docs/vessel.png'
+    outfile = 'docs/vessel_encoded.png'
+    messagefile = 'docs/message_big.txt'
     alpha = 0.45
     bpcs_steg_encode(infile, messagefile, outfile, alpha)
+    
+def encode_mini_vessel():
+    infile = 'docs/vessel_mini.png'
+    outfile = 'docs/vessel_mini_encoded.png'
+    messagefile = 'docs/message.txt'
+    alpha = 0.45
+    bpcs_steg_encode(infile, messagefile, outfile, alpha)
+
+if __name__ == '__main__':
+    encode_mini_vessel()

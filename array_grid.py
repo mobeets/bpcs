@@ -39,7 +39,7 @@ def get_next_grid_dims(arr, dims):
         for (xleft, xright) in xs:
             for (yleft, yright) in ys:
                 i += 1
-                if i % 10000 == 0:
+                if i % 1000 == 0:
                     log.critical('Grid {0} of {1}'.format(i, ngrids))
                 yield [slice(xleft, xright), slice(yleft, yright)] + list(z)
 
