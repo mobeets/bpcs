@@ -14,11 +14,14 @@ BEHAVIORS:
     capacity
         * expects a vessel image file and alpha value
         * assesses the maximum size of a message that could be encoded within the vessel image
+    test
+        * runs the unit tests
 
 """
-from bpcs_steg_decode import bpcs_steg_decode
-from bpcs_steg_encode import bpcs_steg_encode
+from bpcs_steg_decode import decode
+from bpcs_steg_encode import encode
 from bpcs_steg_capacity import capacity
+from bpcs_steg_test import test_all
 
 import os.path
 import optparse
@@ -29,11 +32,11 @@ __email__ = "mobeets@gmail.com"
 
 parser = optparse.OptionParser()
 
-valid_opt_behaviors = ['encode', 'decode', 'capacity']
 valid_opt_behaviors = {
     'encode': ['infile', 'messagefile', 'alpha'],
     'decode': ['infile', 'outfile', 'alpha'],
-    'capacity': ['infile', 'outfile', 'alpha']
+    'capacity': ['infile', 'outfile', 'alpha'],
+    'test': []
     }
 
 parser.add_option('-i', '--infile', dest='infile', action='store', type='string', help='path to vessel image (.png)')
@@ -56,12 +59,15 @@ mandatory_opts = valid_opt_behaviors[opts.behavior]
 if any([m for m in mandatory_opts if not opts.__dict__[m]]):
     parser.error('To {0}, you must specify the following: {1}'.format(opts.behavior, mandatory_opts))
 
-check_file_exists(opts.infile)
-
 if opts.behavior == 'decode':
-    bpcs_steg_decode(opts.infile, opts.outfile, opts.alpha)
+    check_file_exists(opts.infile)
+    decode(opts.infile, opts.outfile, opts.alpha)
 elif opts.behavior == 'encode':
+    check_file_exists(opts.infile)
     check_file_exists(opts.messagefile)
-    bpcs_steg_encode(opts.infile, opts.messagefile, opts.outfile, opts.alpha)
+    encode(opts.infile, opts.messagefile, opts.outfile, opts.alpha)
 elif opts.behavior == 'capacity':
+    check_file_exists(opts.infile)
     capacity(opts.infile, opts.outfile, opts.alpha)
+elif opts.behavior == 'test':
+    test_all()

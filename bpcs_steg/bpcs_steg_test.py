@@ -5,7 +5,6 @@ from bpcs_steg import arr_bpcs_complexity, conjugate
 from array_message import list_to_grids, grids_to_list, str_to_grids, grids_to_str, get_next_message_grid_sized
 from array_grid import get_next_grid_dims
 
-from test_utils import show_html_diff
 import numpy as np
 
 def test_get_next_message_grid_sized_1():
@@ -155,23 +154,6 @@ def test_conjugate():
     arr_conj = conjugate(arr)
     alpha_conj = arr_bpcs_complexity(arr_conj)
     assert alpha == 1 - alpha_conj
-
-def test_null_action():
-    """ makes sure that dummy_fcns won't change image by gridding and/or bitplaning """
-    infile = 'docs/vessel_mini.png'
-    outfile = infile.replace('.', '_dummy.')
-    class DummyActOnImage(ActOnImage):
-        def modify(self):
-            return np.array(self.arr, copy=True)
-
-    for x,y,z in [(a,b,c) for a in [True,False] for b in [True,False] for c in [True,False]]:
-        print 'as_rgb={0}, bitplane={1}, gray={2}'.format(x,y,z)
-        x = DummyActOnImage(infile, as_rgb=x, bitplane=y, gray=z, nbits_per_layer=8)
-        arr = x.modify()
-        x.write(outfile, arr)
-        f1 = open(infile).read()
-        f2 = open(outfile).read()
-        assert f1 == f2, show_html_diff((f1, 'OG'), (f2, 'NEW'))
 
 def test_all():
     test_get_next_message_grid_sized_1()
