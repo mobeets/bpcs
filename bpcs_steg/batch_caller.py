@@ -1,12 +1,12 @@
-from complexity_flippers import complexify, simplify
+from bpcs_steg_capacity import complexify, simplify
 from logger import log
 
 GRAYED = True
 
-def alpha_batch(infile, name, action, alphas):
+def alpha_batch(infile, name, action, alphas, grayed):
     nflippeds = {}
     for alpha in alphas:
-        outfile = infile.replace('.', '_{2}_{1}_p{0}.'.format(int(alpha*100), 'cgc' if GRAYED else 'pbc', name))
+        outfile = infile.replace('.', '_{2}_{1}_p{0}.'.format(int(alpha*10), 'cgc' if grayed else 'pbc', name))
         # print alpha
         log.critical('---------------------\n' + outfile + '\n---------------------')
         nflipped = action(infile, outfile, alpha)
@@ -21,14 +21,15 @@ def write_stats(outfile, stats):
         f.write(out)
 
 def batch(infile):
-    actions = {'complexified': complexify, 'simplified': simplify}
-    alphas = [0.3 + (a/100.0) for a in range(2)]
+    actions = {'rand_complex_size': complexify, 'rand_simp_side': simplify}
+    alphas = [a/10.0 for a in range(10)]
     stats = {}
-    for name, fcn in actions.iteritems():
-        cur_stats = alpha_batch(infile, name, fcn, alphas)
-        stats.update(cur_stats)
+    for gray in [True, False]:
+        for name, fcn in actions.iteritems():
+            cur_stats = alpha_batch(infile, name, fcn, alphas, gray)
+            stats.update(cur_stats)
     write_stats(infile.replace('.png', '_stats_pbc.txt'), stats)
 
 if __name__ == '__main__':
-    infile = 'docs/vessel_small.png'
+    infile = '/Users/mobeets/bpcs-steg/docs/vessel_small.png'
     batch(infile)

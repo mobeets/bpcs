@@ -1,5 +1,5 @@
 import numpy as np
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import os.path
 from logger import log
 
@@ -19,6 +19,19 @@ def histogram_of_complexity(arr, grid_size, alpha, comp_fcn):
 
     navail = sum([n for n, bin in zip(ns, bins) if comp_fcn(bin, alpha)])
     return fig, navail, sum(ns)
+
+def rand_image_complexity(arr, alpha, comp_fcn, grid_size):
+    n = 0
+    for dims in get_next_grid_dims(arr, grid_size):
+        grid = arr[dims]
+        if comp_fcn(arr_bpcs_complexity(grid), alpha): # < or >
+            n += 1
+            init_grid = np.copy(grid)
+            np.random.shuffle(init_grid.reshape(-1))
+            arr[dims] = init_grid
+    log.critical('Conjugated {0} grids'.format(n))
+    # histogram_of_complexity(arr, params)
+    return arr, n
 
 def flip_image_complexity(arr, alpha, comp_fcn, grid_size):
     n = 0
@@ -48,12 +61,14 @@ class HistogramComplexityImage(ActOnImage):
 class ComplexifyImage(ActOnImage):
     def modify(self, alpha, grid_size=(8,8)):
         new_arr = np.array(self.arr, copy=True)
-        return flip_image_complexity(new_arr, alpha, lambda x,thresh: x>=thresh, grid_size)
+        return rand_image_complexity(new_arr, alpha, lambda x,thresh: x>=thresh, grid_size)
+        # return flip_image_complexity(new_arr, alpha, lambda x,thresh: x>=thresh, grid_size)
 
 class SimplifyImage(ActOnImage):
     def modify(self, alpha, grid_size=(8,8)):
         new_arr = np.array(self.arr, copy=True)
-        return flip_image_complexity(new_arr, alpha, lambda x,thresh: x<thresh, grid_size)
+        return rand_image_complexity(new_arr, alpha, lambda x,thresh: x<thresh, grid_size)
+        # return flip_image_complexity(new_arr, alpha, lambda x,thresh: x<thresh, grid_size)
 
 def histogram(infile, outfile, alpha, comp_fcn):
     x = HistogramComplexityImage(infile, as_rgb=True, bitplane=True, gray=True, nbits_per_layer=8)
