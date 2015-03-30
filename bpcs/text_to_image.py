@@ -1,8 +1,10 @@
-from PIL import Image
-import numpy as np
-from math import sqrt
 import re
 import string
+from math import sqrt
+
+import numpy as np
+from PIL import Image
+
 from test_utils import show_html_diff
 
 def digits_in_base_as_tuple(x, base):

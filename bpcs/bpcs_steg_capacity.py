@@ -1,8 +1,9 @@
+import os.path
+
 import numpy as np
 # import matplotlib.pyplot as plt
-import os.path
-from logger import log
 
+from logger import log
 from act_on_image import ActOnImage
 from bpcs_steg import arr_bpcs_complexity, conjugate, max_bpcs_complexity
 from array_message import get_n_message_grids

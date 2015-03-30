@@ -1,11 +1,11 @@
+import numpy as np
+
 from act_on_image import ActOnImage
 from array_bit_plane import pbc_to_cgc, cgc_to_pbc, BitPlane
 from bpcs_steg import arr_bpcs_complexity, conjugate
 
 from array_message import list_to_grids, grids_to_list, str_to_grids, grids_to_str, get_next_message_grid_sized
 from array_grid import get_next_grid_dims
-
-import numpy as np
 
 def test_get_next_message_grid_sized_1():
     arr = np.array([[1,0,0,1], [0,1,1,0], [1,1,1,1]])

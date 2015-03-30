@@ -1,5 +1,5 @@
-import numpy as np
 import itertools
+import numpy as np
 from logger import log
 
 def xor_lists(a, b):

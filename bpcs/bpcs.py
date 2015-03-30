@@ -18,13 +18,13 @@ BEHAVIORS:
         * runs the unit tests
 
 """
+import os.path
+import optparse
+
 from bpcs_steg_decode import decode
 from bpcs_steg_encode import encode
 from bpcs_steg_capacity import capacity
 from bpcs_steg_test import test_all
-
-import os.path
-import optparse
 
 __author__ = "Jay Hennig"
 __license__ = "BSD"

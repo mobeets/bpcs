@@ -1,6 +1,6 @@
 import numpy as np
-from logger import log
 
+from logger import log
 from act_on_image import ActOnImage
 from array_message import read_message_grids, get_next_message_grid_sized
 from array_grid import get_next_grid_dims
