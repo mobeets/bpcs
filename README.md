@@ -1,5 +1,4 @@
-__BPCS Steganography__: encoding/decoding messages hidden in a vessel image
-Source: [pdf](http://web.eece.maine.edu/~eason/steg/SPIE98.pdf)
+__BPCS Steganography__: encoding/decoding messages hidden in a vessel image (source: [pdf](http://web.eece.maine.edu/~eason/steg/SPIE98.pdf))
 
 ### Usage
 
