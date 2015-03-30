@@ -1,0 +1,185 @@
+-------------------------
+BPCS STEG: What it took
+-------------------------
+NOTES:
+    CATEGORIES
+        {FORWARD} == Proactive, obvious movement forward
+        {REFACTOR} == Things are getting too icky
+        {PROBLEM} == Unexpected issue or confusion
+            note: must end in SUCCESS or PAUSED
+        {SEEKING} == I know what I want, but I don't know how to do it
+            note: must end in SUCCESS or PAUSED
+        {TESTING} == I'm being smart, but probably not excited
+        {SHARING} == I'm making efforts that would be unnecessary if I didn't want other people to use it
+    ACTIONS
+        [R] == Reading
+        [De] == Designing
+        [Cd] == Coding
+        [Te] == Test-writing
+        [Br] == Browsing
+        [Ex] == Executing
+        [Wr] == Documentation
+    TAGS
+        * == event
+        # == hyperlink/source
+    NOTE:
+        {TESTING}[Cd] == test-and-code simultaneously
+        {TESTING}[Te] == testing retroactively and then fixing bugs
+-------------------------
+TO DO
+
+* test capacity's claims
+* try running with different images and get an idea for best image for lower alpha
+
+-------------------------
+4/30/13:
+    (SUMMARY) Interesting, packaging all this up in a conventional way. Never done it before. Probably that's why I got distracted and ended up doing this instead of testing it on different image types...
+    (17:15 - 18:00){SHARING}[Cd] wrote option parsers for running all behaviors from main.py
+    (18:00 - 18:45){SHARING}[Cd] wrote setup.py
+4/28/13:
+    (SUMMARY)
+    (16:30 - 16:43){FORWARD}[Cd] finished conjugation map (with trash bits) decoding
+    (16:43){FORWARD}[Ex] confirmed bpcs encoding/decoding works for both text and image messages! I'm done!
+4/27/13:
+    (SUMMARY) No rush, taking my time, enjoying refactoring because it destresses me to see it more simplified, though there wasn't much rigor in the way I moved code around without simultaneously testing.
+    (13:30 - 14:10){FORWARD}[Cd] writing bpcs decoder
+    (14:10 - 15:20){REFACTOR}[Cd] refactoring into classes rather than fcn-based
+    (15:40 - 16:45){FORWARD}[Cd] trying to encode/decode image
+    (SUMMARY) I felt compelled to do this...I'm just so close it felt like 'Just a bit more...just a bit more...' but now I'm stopping because it's been too long, and I'm frustrated, and now I have a significant problem to deal with...
+    (16:45 - 17:20){PROBLEM}[Cd] wrong number of grids found before and after--due to conj_maps not always having complexity above alpha! do they encode themselves??
+        * PAUSED
+    (SUMMARY) Fucking exhausted, but I'm hooked now. Felt close, felt tortured--but even more so when I tried to quit--and now I feel amazing. But my eyes hurt. And I've been clenching my teeth...Not healthy, this, but now I can sleep soundly.
+    (18:30 - 21:15){FORWARD}[Cd] Rewriting conjugation map encoding to fill with trash to ensure that the complexity of each map is above alpha
+4/26/13:
+    (SUMMARY) Nothing exciting--just running with various parameters and checking results/appearances
+    (17:15 - 18:15){FORWARD}[Ex] Running cgc and pbc, simplified and complexified, for alphas 0.0, 0.1, 0.2, ..., 0.9
+    (19:30 - 19:45){FORWARD}[Ex] Showing various versions to others to vote on whether pbc or cgc looks better
+    (20:30 - 21:30){FORWARD}[Cd] Wrote get_next_message_grid_sized--and now the encoding coding is mostly done!
+4/25/13:
+    (SUMMARY) The fun part begins! But very slow to run...Also Jess kept distracting me and eventually made me quit, so there was no real immersion
+    (14:00 - 14:10){FORWARD}[Ex] Running for the first time! Replacing grids with complexity below 0.3 with their conjugates
+    (14:30 - 15:20){PROBLEM}[Ex] image looked the same before and after--grids were not being replaced with their conjugates
+        * SUCCESS: ended up showing image complexity of various grids to prove to myself that I'd fixed it and that grids were truly being modified
+    (15:20 - 15:55){FORWARD}[Ex] Running with various parameters, removing simple grids and removing complex grids and looking at results
+    (15:56){PROBLEM}[Ex] You can see edges of replaced grids...maybe I shouldn't replace the high-bit layers?
+        * PAUSED
+    (SUMMARY) Worked on two tiny little functions, tough only because of array dimension problems...took a lot of stackoverflow browsing and just kinda guessing what would work, then used tests to confirm that things were going right. Feel okay but mostly just glad it's over.
+    (11:30 - 11:40){SEEKING}[Br] Google "numpy map"
+        * SUCCESS: reshape(-1) lets you iterate over values in array #http://stackoverflow.com/questions/6824122/mapping-a-numpy-array-in-place
+    (11:47){PROBLEM}[Br] what's the difference between numpy reshape and resize?
+        * SUCCESS: reshape cannot change values, resize can
+    (11:50 - 12:15){FORWARD}[Cd] trying out various stackoverflow solutions of getting a new array with an additional dimension of original array, using map fcns, for bitplane stack and slice
+    (12:15 - 12:26){TESTING}[Re] BitPlane's stack and slice are invertible even when graying...all now passing!
+4/22/13:
+    (SUMMARY) Very patient today--went in with the one brief goal of getting conjugation to work. Decided to do some casual research first, reading documentation. Slowly meandered into solving the problem, and then it came immediately! Only been an hour but it'll feel good to stop now after how easy this has been.
+    (17:34){FORWARD}[R] Google "numpy mask" to read about how numpy's masks work # http://docs.scipy.org/doc/numpy/reference/generated/numpy.ma.mask_or.html
+    (17:38){FORWARD}[R] Google "numpy array bits" # http://docs.scipy.org/doc/numpy/reference/routines.bitwise.html
+    (17:48){SEEKING}[Br] Google "numpy replace array with other array mask"
+        * PAUSED
+    (17:51){SEEKING}[Br] Google "numpy compose two arrays"
+        * PAUSED
+    (17:52){SEEKING}[Br] Google "numpy checkerboard"
+        * SUCCESS # http://stackoverflow.com/questions/2169478/how-to-make-a-checkerboard-in-numpy
+    (17:55 - 18:07){TESTING}[Cd] setting up test of conjugation working correctly
+    (18:07 - 18:19){PROBLEM}[Cd] fixing checkerboard to have correct dimensions
+        * SUCCESS
+    (18:19 - 18:30){TESTING}[Cd] unbelievably worked in only like two or three tries...conjugation complete and passing tests!
+4/21/13:
+    (SUMMARY) Victory. Fuck yes. Gridding done, and I feel great. Thought about it casually on a walk before coding, so I knew how to go about it. Then sat down and went for it, without haste.
+    (17:50 - 18:08){FORWARD}[Cd] decide to remove Grid iterator idea and just write generator for dims to array
+    (18:08){SEEKING}[Br] Google "python cartesian product arbitrary length"
+        * SUCCESS: itertools.product(*list_of_lists) # http://stackoverflow.com/questions/533905/get-the-cartesian-product-of-a-series-of-lists-in-python
+    (18:16){SEEKING}[Br] Google "numpy array access with list"
+        * SUCCESS: slice() # http://docs.scipy.org/doc/numpy/user/basics.indexing.html
+    (18:20 - 18:45){FORWARD}[Cd] verify that grid-dim generator is creating the correct chunks of array
+    (18:45 - 18:56){TESTING}[Te] write code to verify, in full, that all is well
+4/20/13:
+    (SUMMARY) Test-first dev today keeps me progressing confidently but not hyperactively; I feel content but not anxious or overwhelmed--in control
+    (13:28 - 13:40){PROBLEM}[R] Google "big-endian", python "struct" documentation
+        * PAUSED: realize as long as you're working a byte-at-a-time, this doesn't really apply to me
+    (13:30 - 14:07){TESTING}[Cd] tests for str to bytes to grids and vice-versa
+    (14:07 - 14:31){TESTING}[Cd] message tests for reading/writing all passing now
+    (14:36){SEEKING}[Br] Google "np stack third dimension"
+        * SUCCESS: np.dstack # http://docs.scipy.org/doc/numpy/reference/generated/numpy.vstack.html
+    (14:41){SEEKING}[Br] Google "numpy iterate other dimension"
+        * SUCCESS: only way, unfortunately, is using [:,:,1], e.g., which is pretty ugly... # http://stackoverflow.com/questions/1589706/iterating-over-arbitrary-dimension-of-numpy-array
+        * realize that numpy arrays are iterated over in the reverse of what is intuitive, e.g. shape of [300,300,3,8] for 300x300 pixel image (3 colors, 8 bits each) is more easily iterated over if it is of shape [8,3,300,300]
+    (14:41 - 15:54){TESTING}[Cd] cgc-to-pbc and pbc-to-cgc working and passing tests
+4/19/13:
+    (SUMMARY) I am jumping all over the damn place, barely focusing on anything, writing code like a demon as the whim takes me...I leave feeling overwhelmed, unsatisfied, itching to keep going...compulsive
+    (17:00 - 17:20){TESTING}[Cd] writing tests of invertibility for certain fcns (graying, gridding, bit-planing, etc.)
+    (17:20 - 17:30){FORWARD}[Cd] writing fcns to read message, as binary, into grids
+    (17:30){SEEKING}[Br] Google "numpy resize zero fill"
+        * SUCCESS: realize I can just use a list since the array was already flat...
+    (17:30 - 17:50){FORWARD}[Cd] writing fcns to read message, as binary, into grids
+    (17:50){SEEKING}[Br] Google "python read file as bits"
+        * SUCCESS # http://stackoverflow.com/questions/2576712/using-python-how-can-i-read-the-bits-in-a-byte
+    (17:50 - 18:00){FORWARD}[Cd] writing fcns to read message, as binary, into grids
+    (18:00){SEEKING}[Br] Google "python combine arrays"
+        * SUCCESS # http://stackoverflow.com/questions/6740311/combining-numpy-arrays
+    (18:03){SEEKING}[Br] Google "numpy flatten array"
+        * SUCCESS # http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.flatten.html
+    (18:05){SEEKING}[Br] Google "python write bits"
+        * SUCCESS # http://stackoverflow.com/questions/5205487/how-to-write-individual-bits-to-a-text-file-in-python
+    (18:05 - 18:24){FORWARD}[Cd] writing fcns to read message, as binary, into grids
+4/18/13:
+    (17:15 - 17:27){FORWARD}[Cd] wrote core of bit-planing actions, leaving numpy array iterations for later
+        * added graying array as a parameter (when bit-planing)
+        * write shells of cgc-to-pbc and pbc-to-cgc
+    (17:27){SEEKING}[Br] Google "python exclusive or"
+        * SUCCESS: write cores of cgc-to-pbc and pbc-to-cgc
+    (17:56){SEEKING}[Br] Check BPCS source pdf for image complexity definition
+        * SUCCESS: write fcn to calculate bpcs-complexity of array (untested)
+    (18:15 - 18:20){REFACTOR}[De] redesign architecture by separating grouped functions into their own home
+    (18:20 - 18:41){FORWARD}[Cd] began main bpcs algorithm for embedding gridded message into gridded image given image complexity of each block (untested)
+4/16/13:
+    (SUMMARY) I worked on a similar project today, text_to_image.py, and this came out of it; basically I got distracted by seeing a sort of easy-win situation of just displaying ascii text as an image
+    (18:00 - 18:06){FORWARD}[Cd] wrote binary-to-decimal helper fcns for bit-planing
+4/15/13:
+    (SUMMARY) After bike ride home, I feel like thinking about things beforehand is very worthwhile, and keeps me from getting frustrated. So today ends up being kinda high-level, in prep for the bigger, broader picture
+    (19:20){FORWARD}[De] decide to design overall architecture
+    (19:20 - 21:00){FORWARD}[Cd]
+        * separate opening image, converting to array, gridding array into separate pieces
+        * separate gridding of array from bit-planing of array
+        * create overall flow for opening image, converting to array, modifying, then back to image and saving
+    (21:00 - 21:10}{TESTING}[Cd] create test of opening, gridding, modifying, then writing to verify identity action keeps image the same
+4/14/13:
+    (SUMMARY) A bit of hyperactivity and spasticness at the end leads me feeling a bit overwhelmed, and I'm a bit intimidated by having to use numpy, since all the indices are confusing and manipulation seems like a lot to pick up; I should've just designed the algorithm for gridding before jumping straight into coding
+    (19:30 - 19:47){SEEKING}[Br] Google "python grid"
+        * PAUSED
+    (19:50){SEEKING}[Cd] begin to handroll attempt at reading grids from image
+        * PAUSED
+    (20:05){SEEKING}[Br] Google "python imaging library numpy" after I realize I need numpy to handle matrices of data
+        * SUCCESS: convert PIL image data to numpy array and vice-versa # http://stackoverflow.com/questions/384759/pil-and-numpy
+    (20:09 - 20:25){SEEKING}[Br] begin Googling many numpy terms looking for a built-in way to read blocks of matrix
+        * PAUSED
+    (20:25 - 20:31){SEEKING}[Br] Google "numpy array in blocks"
+        * SUCCESS: "from numpy.lib.stride_tricks import as_strided as ast" # http://stackoverflow.com/questions/5073767/how-can-i-efficiently-process-a-numpy-array-in-blocks-similar-to-matlabs-blkpro
+    (20:30 - 21:00){FORWARD}[Cd] begin to modify stackoverflow solution above to handle edge cases, returning smaller blocks along edges of array if necessary
+    (SUMMARY) It felt very slow, setting all this up, reading documentation and downloading and building things...not very exciting, but it seems like it will pay off next time
+    (11:00 - 11:08){SEEKING}[Br] Google "python read image as bit plane" since BPCS needs access to image as planes of bits
+        * SUCCESS: download Python Imaging Library (PIL) # http://stackoverflow.com/questions/3578373/image-bit-manipulation-in-python
+    (11:12){PROBLEM}[Br] Install Xcode's Command Line Tools for clang, req'd to build PIL
+        * SUCCESS
+    (11:37){SEEKING}[R] Read PIL documentation to learn how to open a file
+        * SUCCESS: # http://www.pythonware.com/library/pil/handbook/overview.htm
+    (11:45 - 12:00){FORWARD}[Cd] Open vessel.png as R,G,B layers, modify random pixel colors in vessel.png, and rewrite
+        * SUCCESS
+    (12:03 - 12:30){SEEKING}[Br] Google "python imaging library tiling"
+        * PAUSED 
+4/13/13:
+    (SUMMARY) It feels great to be learning new things again, and steganography has always seemed intriguing/exciting. The BPCS thing is very clear, but the details seem interesting, and anyway it'd be good to work with images in python
+    (17:40){FORWARD}[Br] browse mobeets.tumblr.com
+        * find links to steganography papers
+    (17:40 - 17:54){FORWARD}[R] read plain-text paper on 'mimic functions' # http://www.nic.funet.fi/pub/crypt/old/mimic/mimic.text
+    (17:54 - 18:17){PROBLEM}[Br] Google "context free grammar", "mimic functions", "huffman coding python" looking for python implementations of those items mentioned
+        * PAUSED
+    (18:17 - 18:33){FORWARD}[R] read paper on BPCS # http://web.eece.maine.edu/~eason/steg/SPIE98.pdf
+    (18:39 - 18:42){PROBLEM}[Br] Google "pbc to cgc"
+        * SUCCESS: # http://www.datahide.com/BPCSe/pbc-vs-cgc-e.html
+    (18:47 - 18:50){PROBLEM}[Br] Google "pure binary coded"
+        * SUCCESS: # http://en.wikipedia.org/wiki/Binary-coded_decimal
+    (18:51 - 18:53){PROBLEM}[Br] Wikipedia "bit planes"
+        * SUCCESS: # http://en.wikipedia.org/wiki/Bit_plane
+    (18:59 - 19:10){FORWARD}[De] write up outline of approach needed to implement python implementation of BPCS
+
