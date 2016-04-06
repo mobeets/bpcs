@@ -4,42 +4,41 @@ __BPCS Steganography__: encoding/decoding messages hidden in a vessel image (sou
 
 ```
 $ python bpcs/bpcs.py -h
-Usage: bpcs.py [options]
+usage: bpcs.py [-h] [-i INFILE] [-o OUTFILE] [-m MESSAGEFILE] [-a ALPHA]
+               behavior
 
-Options:
-  -h, --help            show this help message and exit
-  -i INFILE, --infile=INFILE
-                        path to vessel image (.png)
-  -o OUTFILE, --outfile=OUTFILE
-                        path to write output file
-  -m MESSAGEFILE, --messagefile=MESSAGEFILE
-                        path to message file
-  -a ALPHA, --alpha=ALPHA
-                        complexity threshold
-  -b BEHAVIOR, --behavior=BEHAVIOR
-                        interaction modes: ['encode', 'decode', 'test',
+positional arguments:
+  behavior              interaction modes: ['encode', 'decode', 'test',
                         'capacity']
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -i INFILE, --infile INFILE
+                        path to vessel image (.png)
+  -o OUTFILE, --outfile OUTFILE
+                        path to write output file
+  -m MESSAGEFILE, --messagefile MESSAGEFILE
+                        path to message file
+  -a ALPHA, --alpha ALPHA
+                        complexity threshold
 ```
 
-#### Encoding
+#### Encoding/Decoding
 
-* Example: `python bpcs/bpcs.py -i vessel.png -m message.txt -o outfile.png -b encode`
+First, we want to embed the file `examples/message.txt` in the image at `examples/vessel.png`. The output is `encoded.png`.
 
-* expects a vessel image file, message file, and alpha value
-* hides the contents of a file inside a vessel image
+`python bpcs.py encode -i vessel.png -m message.txt -o encoded.png`
 
-#### Decoding
+Now, given `encoded.png`, we want to recover the message.
 
-* Example: `python bpcs/bpcs.py -i vessel.png -a 0.45 -b decode`
+`python bpcs.py decode -i encoded.png -a 0.45 -o message_decoded.txt`
 
-* expects a vessel image file, and alpha value
-* recovers the message stored inside a vessel image
+Now, `message_decoded.txt` is the same as `message.txt`, so we have recovered our original message.
 
-#### Check image's message capacity
+#### Checking a vessel image's message capacity
 
-* Example: `python bpcs/bpcs.py -i vessel.png -a 0.45 -b capacity`
+Given a vessel image file and an alpha value, we can assess the maximum size message that we could encode.
 
-* expects a vessel image file and alpha value
-* assesses the maximum size of a message that could be encoded within the vessel image
+`python bpcs.py -i vessel.png -a 0.45 -b capacity`
 
-__Run tests__: `python bpcs/bpcs.py -b test`
+__Run tests__: `python bpcs.py test`

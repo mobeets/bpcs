@@ -16,9 +16,9 @@ setup(
     author = "Jay Hennig",
     author_email = "mobeets@gmail.com",
     description = ("BPCS Steganography: embedding a message in a vessel image file"),
-    license = "BSD",
+    license = "MIT",
     keywords = "bpcs steganography image bitplane complexity segmentation",
-    url = "http://packages.python.org/bpcs_steg",
+    # url = "http://packages.python.org/bpcs_steg",
     packages=['bpcs_steg'],
     long_description=read('README')
 )

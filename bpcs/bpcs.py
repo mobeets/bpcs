@@ -19,7 +19,7 @@ BEHAVIORS:
 
 """
 import os.path
-import optparse
+import argparse
 
 from bpcs_steg_decode import decode
 from bpcs_steg_encode import encode
@@ -27,10 +27,10 @@ from bpcs_steg_capacity import capacity
 from bpcs_steg_test import test_all
 
 __author__ = "Jay Hennig"
-__license__ = "BSD"
+__license__ = "MIT"
 __email__ = "mobeets@gmail.com"
 
-parser = optparse.OptionParser()
+parser = argparse.ArgumentParser()
 
 valid_opt_behaviors = {
     'encode': ['infile', 'messagefile', 'alpha'],
@@ -39,25 +39,16 @@ valid_opt_behaviors = {
     'test': []
     }
 
-parser.add_option('-i', '--infile', dest='infile', action='store', type='string', help='path to vessel image (.png)')
-parser.add_option('-o', '--outfile', dest='outfile', action='store', type='string', help='path to write output file')
-parser.add_option('-m', '--messagefile', dest='messagefile', action='store', type='string', help='path to message file')
-parser.add_option('-a', '--alpha', dest='alpha', action='store', type='float', help='complexity threshold', default=0.45)
-parser.add_option('-b', '--behavior', dest='behavior', action='store', type='string', help='interaction modes: {0}'.format(valid_opt_behaviors.keys()))
-
-(opts, args) = parser.parse_args()
+parser.add_argument('behavior', type=str, help='interaction modes: {0}'.format(valid_opt_behaviors.keys()))
+parser.add_argument('-i', '--infile', type=str, help='path to vessel image (.png)')
+parser.add_argument('-o', '--outfile', type=str, help='path to write output file')
+parser.add_argument('-m', '--messagefile', type=str, help='path to message file')
+parser.add_argument('-a', '--alpha', type=float, help='complexity threshold', default=0.45)
+opts = parser.parse_args()
 
 def check_file_exists(filename):
     if not os.path.exists(filename):
         parser.error('The file "{0}" could not be found.'.format(filename))
-
-if not opts.behavior:
-    parser.error('-h for help.')
-if opts.behavior not in valid_opt_behaviors:
-    parser.error('Illegal behavior: {0}. Valid behaviors are {1}'.format(opts.behavior, valid_opt_behaviors.keys()))
-mandatory_opts = valid_opt_behaviors[opts.behavior]
-if any([m for m in mandatory_opts if not opts.__dict__[m]]):
-    parser.error('To {0}, you must specify the following: {1}'.format(opts.behavior, mandatory_opts))
 
 if opts.behavior == 'decode':
     check_file_exists(opts.infile)
