@@ -74,9 +74,10 @@ class SimplifyImage(ActOnImage):
 def histogram(infile, outfile, alpha, comp_fcn):
     x = HistogramComplexityImage(infile, as_rgb=True, bitplane=True, gray=True, nbits_per_layer=8)
     hist = x.modify(alpha, comp_fcn)
-    hist.savefig(outfile)
-    log.critical('Wrote histogram of image complexity to {0}'.format(outfile))
-    # plt.show()
+    if outfile is not None;
+        hist.savefig(outfile)
+        log.critical('Wrote histogram of image complexity to {0}'.format(outfile))
+        # plt.show()
 
 def complexify(infile, outfile, alpha):
     x = ComplexifyImage(infile, as_rgb=True, bitplane=True, gray=True, nbits_per_layer=8)
@@ -90,6 +91,6 @@ def simplify(infile, outfile, alpha):
     x.write(outfile, arr)
     return stats
 
-def capacity(infile, outfile, alpha):
+def capacity(infile, alpha=0.45, outfile=None):
     greater = lambda x,thresh: x>=thresh
     histogram(infile, outfile, alpha, greater)

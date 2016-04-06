@@ -85,7 +85,7 @@ class BPCSEncodeImage(ActOnImage):
         message_grids = read_message_grids(messagefile, (8,8))
         return embed_message_in_vessel(new_arr, alpha, message_grids, (8,8))
 
-def encode(infile, messagefile, outfile, alpha):
+def encode(infile, messagefile, outfile, alpha=0.45):
     x = BPCSEncodeImage(infile, as_rgb=True, bitplane=True, gray=True, nbits_per_layer=8)
     arr = x.modify(messagefile, alpha)
     x.write(outfile, arr)
