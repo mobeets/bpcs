@@ -7,6 +7,8 @@ The goal of steganography is to hide a message in plain sight. Here, we embed a 
 ![vessel](https://cloud.githubusercontent.com/assets/1677179/14302935/10adb242-fb74-11e5-9cc7-e5a213760876.png)
 ![out](https://cloud.githubusercontent.com/assets/1677179/14302974/712fdfc8-fb74-11e5-89fe-a11a2116f055.png)
 
+Note that with BPCS, the hidden message doesn't have to be text. It can in fact be any file type, including another image.
+
 ### Encoding and decoding
 
 First, we want to embed a file in a vessel image. Here, we'll embed the text of an entire novel in a 300x300 image.
