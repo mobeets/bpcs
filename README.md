@@ -25,6 +25,8 @@ Given a vessel image file and an alpha value, we can assess the maximum size mes
 
 `python bpcs.py capacity -i examples/vessel.png -a 0.45`
 
+The vessel image in the examples folder is 158 KB, and can store a hidden message of up to around 66 KB.
+
 ### Customization
 
 The goal of steganography is to hide things in plain sight. For this reason, BPCS doesn't use a secret key or password for encoding and decoding. However, aside from varying the alpha parameter, one way to customize the BPCS procedure is by adding custom encryption and decryption to the message before and after using BPCS.
