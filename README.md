@@ -64,7 +64,9 @@ optional arguments:
 
 __Install__: `pip install bpcs`
 
-`>> import bpcs`
-`>> bpcs.encode(...)`
-`>> bpcs.decode(...)`
-`>> bpcs.capacity(...)`
+```python
+>> import bpcs
+>> bpcs.encode(...)
+>> bpcs.decode(...)
+>> bpcs.capacity(...)
+```
