@@ -59,3 +59,12 @@ optional arguments:
   -a ALPHA, --alpha ALPHA
                         complexity threshold
 ```
+
+### Run as a module
+
+__Install__: `pip install bpcs`
+
+`>> import bpcs`
+`>> bpcs.encode(...)`
+`>> bpcs.decode(...)`
+`>> bpcs.capacity(...)`
