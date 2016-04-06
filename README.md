@@ -1,4 +1,11 @@
-__BPCS Steganography__: encoding/decoding messages hidden in a vessel image (source: [pdf](http://web.eece.maine.edu/~eason/steg/SPIE98.pdf))
+## BPCS Steganography
+
+Source: [pdf](http://web.eece.maine.edu/~eason/steg/SPIE98.pdf)
+
+The goal of steganography is the hiding of things in plain sight. Here, we embed a message in an image by replacing all "complex" blocks of pixels in the image with portions of our message. It turns out that portions of the image with high complexity can be entirely removed (or in this case, replaced with our message) without changing the appearance of the image at all. Because most blocks of pixels are complex (i.e., with complexity above some threshold, "alpha"), we can usually replace around 45% of our image with a hidden message. Below, the 300x300 image on the right contains the text of an entire novel, while still looking nearly identical to the vessel image on the left.
+
+![vessel](https://cloud.githubusercontent.com/assets/1677179/14302935/10adb242-fb74-11e5-9cc7-e5a213760876.png)
+![out](https://cloud.githubusercontent.com/assets/1677179/14302974/712fdfc8-fb74-11e5-89fe-a11a2116f055.png)
 
 ### Encoding and decoding
 
@@ -17,6 +24,10 @@ The output, message_decoded.txt, should be the same as message.txt, which means 
 Given a vessel image file and an alpha value, we can assess the maximum size message that we could encode.
 
 `python bpcs.py capacity -i examples/vessel.png -a 0.45`
+
+### Customization
+
+The goal of steganography is to hide things in plain sight. For this reason, BPCS doesn't use a secret key or password for encoding and decoding. However, aside from varying the alpha parameter, one way to customize the BPCS procedure is by adding custom encryption and decryption to the message before and after using BPCS.
 
 ### Running tests
 
