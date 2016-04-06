@@ -1,6 +1,6 @@
 __BPCS Steganography__: encoding/decoding messages hidden in a vessel image (source: [pdf](http://web.eece.maine.edu/~eason/steg/SPIE98.pdf))
 
-#### Encoding/Decoding
+### Encoding and decoding
 
 First, we want to embed a file in a vessel image. Here, we'll embed the text of an entire novel in a 300x300 image.
 
@@ -12,13 +12,15 @@ Now, given the encoded image, we want to recover the message hidden inside it.
 
 The output, message_decoded.txt, should be the same as message.txt, which means we have recovered our original message.
 
-#### Checking a vessel image's message capacity
+### Checking a vessel image's message capacity
 
 Given a vessel image file and an alpha value, we can assess the maximum size message that we could encode.
 
 `python bpcs.py capacity -i examples/vessel.png -a 0.45`
 
-__Run tests__: `python bpcs.py test`
+### Running tests
+
+`python bpcs.py test`
 
 ### Usage
 
