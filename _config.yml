@@ -1,0 +1,8 @@
+title: Steganography (BPCS)
+description: Embedding hidden messages inside images.
+google_analytics: 
+show_downloads: true
+theme: jekyll-theme-minimal
+
+gems:
+  - jekyll-mentions
