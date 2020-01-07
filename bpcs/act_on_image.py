@@ -1,5 +1,5 @@
 import numpy as np
-import Image # source: http://www.pythonware.com/library/pil/handbook/image.htm
+from PIL import Image # source: http://www.pythonware.com/library/pil/handbook/image.htm
 
 from logger import log
 from array_bit_plane import BitPlane
