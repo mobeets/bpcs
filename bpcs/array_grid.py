@@ -25,7 +25,7 @@ def get_next_grid_dims(arr, dims):
     def get_inds(total_length, grid_length):
         lefts = range(0, total_length, grid_length)
         rights = [min(total_length, left+grid_length) for left in lefts]
-        return zip(lefts, rights)
+        return list(zip(lefts, rights))
     xs = get_inds(nrows, rows_per_grid)
     ys = get_inds(ncols, cols_per_grid)
 
@@ -33,7 +33,7 @@ def get_next_grid_dims(arr, dims):
     assert nlayers > 0
     inds = [range(arr.shape[i+2]) for i in range(nlayers)]
     zs = itertools.product(*inds)
-    ngrids = reduce(lambda x,y: x*y, [len(x) for x in inds], 1)*len(list(xs))*len(list(ys))
+    ngrids = reduce(lambda x,y: x*y, [len(x) for x in inds], 1)*len(xs)*len(ys)
     log.critical('Found {0} grids'.format(ngrids))
     i = 0
     for z in zs:

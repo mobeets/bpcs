@@ -25,9 +25,9 @@ def checkerboard(h, w):
     h, w are int
     returns a checkerboard array of shape == [h,w]
     """
-    re = np.r_[ (w/2)*[0,1] + ([0] if w%2 else [])]
+    re = np.r_[ int(w/2)*[0,1] + ([0] if w%2 else [])]
     ro = 1-re
-    return np.row_stack(h/2*(re,ro) + ((re,) if h%2 else ()))
+    return np.row_stack(int(h/2)*(re,ro) + ((re,) if h%2 else ()))
 
 def conjugate(arr):
     """

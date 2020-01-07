@@ -1,5 +1,7 @@
 from math import ceil
 import numpy as np
+from functools import reduce
+
 from .logger import log
 from .bpcs_steg import conjugate, arr_bpcs_complexity, max_bpcs_complexity, checkerboard
 
@@ -53,7 +55,7 @@ def list_to_grids(arr, dims):
     length_missing = area - rem if rem else 0
     arr += [0]*length_missing
     arr = np.array(arr)
-    ngrids = len(arr) / area
+    ngrids = int(len(arr) / area)
     assert len(arr) % area == 0
     return np.resize(arr, [ngrids, dims[0], dims[1]])
 
@@ -68,7 +70,7 @@ def str_to_grids(message, grid_size):
         """ reads the bits from a str, high bits first """
         bytes = (ord(b) for b in out)
         for b in bytes:
-            for i in reversed(xrange(8)):
+            for i in reversed(range(8)):
                 yield (b >> i) & 1
     bits_list = list(bits(message))
     # return bits_list
@@ -105,7 +107,7 @@ def grids_to_str(grids):
     # since the message was initially read by the byte
     # any spares must have been added to create a grid
     bits = bits[:len(bits)-nspare]
-    nbytes = len(bits) / 8
+    nbytes = int(len(bits) / 8)
     bytes = np.resize(np.array(bits), [nbytes, 8])
     byte_to_str = lambda byte: int('0b' + ''.join(str(x) for x in byte.tolist()), 2)
     byte_to_char = lambda byte: chr(byte_to_str(byte))
@@ -158,7 +160,8 @@ def separate_conj_map_from_message(grids, alpha):
     n.b. some percent of each conj_map grid will be junk bits added to keep complexity above alpha
     """
     if not grids:
-        return [], []
+        log.critical('No message grids found')
+        return [], [], []
 
     get_nignored = lambda grid: len(get_conj_grid_prefix((grid.shape[0], grid.shape[1]), alpha))
     get_nbits_per_map = lambda grid: grid.shape[0]*grid.shape[1] - get_nignored(grid)
@@ -182,6 +185,8 @@ def get_conj_map(cgrids, nbits_per_map):
 
 def write_conjugated_message_grids(outfile, grids, alpha):
     messages, conj_map_grids, nbits_per_map = separate_conj_map_from_message(grids, alpha)
+    if len(conj_map_grids) == 0:
+        return
     conj_map = get_conj_map(conj_map_grids, nbits_per_map)
     message_grids = get_message_grid_from_grids(messages, conj_map)
     write_message_grids(outfile, message_grids)

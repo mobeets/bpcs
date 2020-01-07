@@ -11,7 +11,7 @@ def remove_message_from_vessel(arr, alpha, grid_size):
     nfound, nkept, nleft = 0, 0, 0
     for dims in get_next_grid_dims(arr, grid_size):
         nfound += 1
-        grid = arr[dims]
+        grid = arr[tuple(dims)]
         if arr_bpcs_complexity(grid) < alpha:
             nleft += 1
             continue
