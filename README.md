@@ -11,6 +11,8 @@ You could upload a profile photo to a website that contains a secret image. Or y
 
 This is an implementation of the method discussed in: Kawaguchi, Eiji, and Richard O. Eason. "Principles and applications of BPCS steganography." In Photonics East (ISAM, VVDC, IEMB), pp. 464-473. International Society for Optics and Photonics, 1999. ([pdf](http://web.eece.maine.edu/~eason/steg/SPIE98.pdf))
 
+(Note: Works for python2; small tweaking required for python3.)
+
 ### Encoding and decoding
 
 First, we want to embed a file in a vessel image. Here, we'll embed the text of an entire novel in a 300x300 image.
@@ -38,6 +40,8 @@ The goal of steganography is to hide things in plain sight. For this reason, BPC
 ### Run as a module
 
 __Installation__: `pip install bpcs`
+
+(Note: Works for python2; small tweaking required for python3.)
 
 ```python
 import bpcs
