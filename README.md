@@ -1,8 +1,6 @@
 ## BPCS Steganography
 
-Source: [pdf](http://web.eece.maine.edu/~eason/steg/SPIE98.pdf)
-
-The goal of steganography is to hide a message in plain sight. Here, we embed a message in an image by replacing all "complex" blocks of pixels in the image with portions of our message. It turns out that portions of the image with high complexity can be entirely removed (or in this case, replaced with our message) without changing the appearance of the image at all. Because most blocks of pixels are complex (i.e., with complexity above some threshold, alpha), we can usually replace around 45% of an image with a hidden message. Below, the 300x300 image on the right contains the text of an entire novel, while still looking virtually identical to the vessel image on the left.
+The goal of steganography is to hide a message in plain sight. BPCS is a method to embed a message in an image by replacing all "complex" blocks of pixels in the image with portions of our message. It turns out that portions of the image with high complexity can be entirely removed (or in this case, replaced with our message) without changing the appearance of the image at all. Because most blocks of pixels are complex (i.e., with complexity above some threshold, alpha), you can usually replace around 45% of an image with a hidden message. Below, the 300x300 image on the right contains the text of an entire novel, while still looking virtually identical to the vessel image on the left.
 
 ![vessel](https://cloud.githubusercontent.com/assets/1677179/14302935/10adb242-fb74-11e5-9cc7-e5a213760876.png)
 ![out](https://cloud.githubusercontent.com/assets/1677179/14302974/712fdfc8-fb74-11e5-89fe-a11a2116f055.png)
@@ -10,6 +8,10 @@ The goal of steganography is to hide a message in plain sight. Here, we embed a 
 Note that with BPCS, the hidden message doesn't have to be text. It can be any file type, including another image.
 
 You could upload a profile photo to a website that contains a secret image. Or you could embed an image of a turtle inside an image of a turtle inside an image...turtles all the way down.
+
+This is an implementation of the method discussed in: Kawaguchi, Eiji, and Richard O. Eason. "Principles and applications of BPCS steganography." In Photonics East (ISAM, VVDC, IEMB), pp. 464-473. International Society for Optics and Photonics, 1999. ([pdf](http://web.eece.maine.edu/~eason/steg/SPIE98.pdf))
+
+(Note: Works for python2; small tweaking required for python3.)
 
 ### Encoding and decoding
 
@@ -38,6 +40,8 @@ The goal of steganography is to hide things in plain sight. For this reason, BPC
 ### Run as a module
 
 __Installation__: `pip install bpcs`
+
+(Note: Works for python2; small tweaking required for python3.)
 
 ```python
 import bpcs
