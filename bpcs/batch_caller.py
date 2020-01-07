@@ -1,5 +1,5 @@
 from logger import log
-from bpcs_steg_capacity import complexify, simplify
+from .bpcs_steg_capacity import complexify, simplify
 
 GRAYED = True
 

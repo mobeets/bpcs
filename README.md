@@ -11,17 +11,15 @@ You could upload a profile photo to a website that contains a secret image. Or y
 
 This is an implementation of the method discussed in: Kawaguchi, Eiji, and Richard O. Eason. "Principles and applications of BPCS steganography." In Photonics East (ISAM, VVDC, IEMB), pp. 464-473. International Society for Optics and Photonics, 1999. ([pdf](http://web.eece.maine.edu/~eason/steg/SPIE98.pdf))
 
-(Note: Works for python2; small tweaking required for python3.)
-
 ### Encoding and decoding
 
 First, we want to embed a file in a vessel image. Here, we'll embed the text of an entire novel in a 300x300 image.
 
-`$ python bpcs.py encode -i examples/vessel.png -m examples/message.txt -o examples/encoded.png`
+`$ python -m bpcs.bpcs encode -i examples/vessel.png -m examples/message.txt -o examples/encoded.png`
 
 Now, given the encoded image, we want to recover the message hidden inside it.
 
-`$ python bpcs.py decode -i examples/encoded.png -a 0.45 -o examples/message_decoded.txt`
+`$ python -m bpcs.bpcs decode -i examples/encoded.png -a 0.45 -o examples/message_decoded.txt`
 
 The output, message_decoded.txt, should be the same as message.txt, which means we have recovered our original message.
 
@@ -29,7 +27,7 @@ The output, message_decoded.txt, should be the same as message.txt, which means 
 
 Given a vessel image file and an alpha value, we can assess the maximum size message that we could encode.
 
-`$ python bpcs.py capacity -i examples/vessel.png -a 0.45`
+`$ python -m bpcs.bpcs capacity -i examples/vessel.png -a 0.45`
 
 The vessel image in the examples folder is 158 KB, and can store a hidden message of up to around 66 KB.
 
@@ -38,10 +36,6 @@ The vessel image in the examples folder is 158 KB, and can store a hidden messag
 The goal of steganography is to hide things in plain sight. For this reason, BPCS doesn't use a secret key or password for encoding and decoding. However, aside from varying the alpha parameter, one way to customize the BPCS procedure is by adding custom encryption and decryption to the message before and after using BPCS.
 
 ### Run as a module
-
-__Installation__: `pip install bpcs`
-
-(Note: Works for python2; small tweaking required for python3.)
 
 ```python
 import bpcs
@@ -59,4 +53,4 @@ bpcs.decode(encfile, msgfile_decoded, alpha) # recover message from encfile
 
 ### Running tests
 
-`$ python bpcs.py test`
+`$ python -m bpcs.bpcs test`

@@ -21,10 +21,10 @@ BEHAVIORS:
 import os.path
 import argparse
 
-from bpcs_steg_decode import decode
-from bpcs_steg_encode import encode
-from bpcs_steg_capacity import capacity
-from bpcs_steg_test import test_all
+from .bpcs_steg_decode import decode
+from .bpcs_steg_encode import encode
+from .bpcs_steg_capacity import capacity
+from .bpcs_steg_test import test_all
 
 __author__ = "Jay Hennig"
 __license__ = "MIT"

@@ -4,7 +4,7 @@ import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 
-from text_to_image import str_to_words, get_word_color_map_fcn
+from .text_to_image import str_to_words, get_word_color_map_fcn
 
 def randrange(vmin, vmax):
     return (vmax-vmin)*np.random.rand(1) + vmin

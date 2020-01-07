@@ -1,8 +1,8 @@
 import numpy as np
 from PIL import Image # source: http://www.pythonware.com/library/pil/handbook/image.htm
 
-from logger import log
-from array_bit_plane import BitPlane
+from .logger import log
+from .array_bit_plane import BitPlane
 
 def load_image(infile, as_rgb):
     get_im_mode = lambda is_rgb: 'RGB' if is_rgb else 'L'

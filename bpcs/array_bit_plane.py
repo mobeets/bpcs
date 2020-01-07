@@ -1,6 +1,6 @@
 import itertools
 import numpy as np
-from logger import log
+from .logger import log
 
 def xor_lists(a, b):
     assert len(a) == len(b)

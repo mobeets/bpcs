@@ -1,2 +1,4 @@
 .DS_Store
 *.pyc
+examples/encoded.png
+examples/message_decoded.txt

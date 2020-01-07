@@ -1,7 +1,7 @@
 from math import ceil
 import numpy as np
-from logger import log
-from bpcs_steg import conjugate, arr_bpcs_complexity, max_bpcs_complexity, checkerboard
+from .logger import log
+from .bpcs_steg import conjugate, arr_bpcs_complexity, max_bpcs_complexity, checkerboard
 
 def get_conj_grid_prefix(dims, alpha):
     """

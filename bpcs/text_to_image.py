@@ -5,7 +5,7 @@ from math import sqrt
 import numpy as np
 from PIL import Image
 
-from test_utils import show_html_diff
+from .test_utils import show_html_diff
 
 def digits_in_base_as_tuple(x, base):
     """

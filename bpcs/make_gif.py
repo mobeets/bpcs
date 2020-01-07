@@ -1,6 +1,6 @@
 import os
 from PIL import Image
-from images2gif import writeGif
+from .images2gif import writeGif
 
 basedir = '/Users/mobeets/bpcs-steg/examples/cgc_v_pbc'
 inf = 'vessel_small_{2}_{0}_p{1}.png'

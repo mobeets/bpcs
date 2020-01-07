@@ -1,10 +1,10 @@
 import numpy as np
 
-from logger import log
-from act_on_image import ActOnImage
-from array_message import read_message_grids, get_next_message_grid_sized
-from array_grid import get_next_grid_dims
-from bpcs_steg import arr_bpcs_complexity, conjugate
+from .logger import log
+from .act_on_image import ActOnImage
+from .array_message import read_message_grids, get_next_message_grid_sized
+from .array_grid import get_next_grid_dims
+from .bpcs_steg import arr_bpcs_complexity, conjugate
 
 ALIVE, CONJUGATING, DEAD = 0,1,2
 def get_message_and_status(message, dims, conjugated, status, alpha):
