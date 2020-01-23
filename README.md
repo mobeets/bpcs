@@ -15,7 +15,7 @@ This is an implementation of the method discussed in: Kawaguchi, Eiji, and Richa
 
 First, we want to embed a file in a vessel image. Here, we'll embed the text of an entire novel in a 300x300 image.
 
-`$ python -m bpcs.bpcs encode -i examples/vessel.png -m examples/message.txt -o examples/encoded.png`
+`$ python -m bpcs.bpcs encode -i examples/vessel.png -m examples/message.txt -a 0.45 -o examples/encoded.png`
 
 Now, given the encoded image, we want to recover the message hidden inside it.
 

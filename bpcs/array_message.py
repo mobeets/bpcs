@@ -146,8 +146,11 @@ def get_n_message_grids(nbits_per_map, ngrids):
     """
     x, y = ngrids-1, 1
     is_valid = lambda x, y, ngrids, nbits_per_map: ngrids==x+y and sum(nbits_per_map[-(y-1):]) < x <= sum(nbits_per_map[-y:])
-    while not is_valid(x, y, ngrids, nbits_per_map):
+    while not is_valid(x, y, ngrids, nbits_per_map) and x > 0:
         x, y = x-1, y+1
+    if x <= 0 and ngrids == 2:
+        # edge case
+        return 1
     assert x > 0
     assert y > 0
     return x
