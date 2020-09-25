@@ -59,6 +59,6 @@ elif opts.behavior == 'encode':
     encode(opts.infile, opts.messagefile, opts.outfile, opts.alpha)
 elif opts.behavior == 'capacity':
     check_file_exists(opts.infile)
-    capacity(opts.infile, opts.outfile, opts.alpha)
+    capacity(opts.infile, alpha=opts.alpha, outfile=opts.outfile)
 elif opts.behavior == 'test':
     test_all()
