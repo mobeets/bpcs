@@ -81,7 +81,7 @@ def read_message_grids(messagefile, grid_size):
     reads messagefile as bits and returns as list of grids
     where each grid is a numpy array with shape == grid_size
     """
-    with open(messagefile, 'r') as f:
+    with open(messagefile, 'r', errors='ignore') as f:
         return str_to_grids(f.read(), grid_size)
 
 def grids_to_list(grids):
