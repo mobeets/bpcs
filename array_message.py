@@ -117,7 +117,7 @@ def write_message_grids(outfile, grids):
     """
     grids is list of numpy arrays, all of same shape
     """
-    with open(outfile, 'w') as f:
+    with open(outfile, 'w', errors='ignore') as f:
         f.write(grids_to_str(grids))
 
 def get_message_grid_from_grids(mgrids, conj_map):
