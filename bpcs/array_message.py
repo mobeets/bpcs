@@ -37,7 +37,7 @@ def get_next_message_grid_sized(arr, dims, min_alpha=None):
     if len(arr) < n:
         arr += [0]*(len(arr) - n)
     cur_arr, arr = np.array(arr[:n]), np.array(arr[n:])
-    cur_arr.resize(dims)
+    cur_arr.resize(dims, refcheck=False)
     if min_alpha:
         assert arr_bpcs_complexity(cur_arr) >= min_alpha, '{0} < {1}'.format(arr_bpcs_complexity(cur_arr), min_alpha)
     return cur_arr, arr

@@ -12,7 +12,7 @@ from .array_grid import get_next_grid_dims
 def histogram_of_complexity(arr, grid_size, alpha, comp_fcn):
     log.critical('Creating histograms of image complexity...')
     max_complexity = max_bpcs_complexity(*grid_size)
-    vals = [arr_bpcs_complexity(arr[dims]) for dims in get_next_grid_dims(arr, grid_size)]
+    vals = [arr_bpcs_complexity(arr[tuple(dims)]) for dims in get_next_grid_dims(arr, grid_size)]
 
     fig = plt.figure()
     ax = fig.add_subplot(111)
