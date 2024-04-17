@@ -1,4 +1,5 @@
 import numpy as np
+import os
 
 from .logger import log
 from .act_on_image import ActOnImage
@@ -85,7 +86,15 @@ class BPCSEncodeImage(ActOnImage):
         message_grids = read_message_grids(messagefile, (8,8))
         return embed_message_in_vessel(new_arr, alpha, message_grids, (8,8))
 
-def encode(infile, messagefile, outfile, alpha=0.45):
+def encode(infile, messagefile, outfile, alpha=0.45, outbitplatefile=''):
     x = BPCSEncodeImage(infile, as_rgb=True, bitplane=True, gray=True, nbits_per_layer=8)
+    arr_beforeModify = x.arr
     arr = x.modify(messagefile, alpha)
     x.write(outfile, arr)
+    if outbitplatefile != '':
+        try:
+            if not os.path.exists(outbitplatefile):
+                os.makedirs(outbitplatefile)
+        except:
+            raise Exception("The path provided is not the path to the folder: {0}".format(outbitplatefile))            
+        x.writeBitplate(outbitplatefile, arr_beforeModify, arr)

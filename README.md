@@ -51,6 +51,17 @@ bpcs.encode(vslfile, msgfile, encfile, alpha) # embed msgfile in vslfile, write 
 bpcs.decode(encfile, msgfile_decoded, alpha) # recover message from encfile
 ```
 
+If you want to save bitplates from a vessel image, specify the folder path as the outbitplatefile parameter.
+```python
+alpha = 0.45
+vslfile = '../examples/vessel.png'
+msgfile = '../examples/message.txt' # can be any type of file
+encfile = '../examples/encoded.png'
+bitplatefile = '../examples/bitplates'
+
+bpcs.encode(vslfile, msgfile, encfile, alpha, outbitplatefile=bitplatefile)
+```
+
 ### Running tests
 
 `$ python -m bpcs.bpcs test`
