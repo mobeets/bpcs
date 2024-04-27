@@ -111,7 +111,7 @@ def grids_to_str(grids):
     bytes = np.resize(np.array(bits), [nbytes, 8])
     byte_to_str = lambda byte: int('0b' + ''.join(str(x) for x in byte.tolist()), 2)
     byte_to_char = lambda byte: chr(byte_to_str(byte))
-    return ''.join([byte_to_char(byte) for byte in bytes])
+    return ''.join([byte_to_char(byte) for byte in bytes]).rstrip('\x00')
 
 def write_message_grids(outfile, grids):
     """
