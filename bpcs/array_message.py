@@ -113,12 +113,18 @@ def grids_to_str(grids):
     byte_to_char = lambda byte: chr(byte_to_str(byte))
     return ''.join([byte_to_char(byte) for byte in bytes]).rstrip('\x00')
 
-def write_message_grids(outfile, grids):
+def write_message_grids(outfile, grids, save_as_png):
     """
     grids is list of numpy arrays, all of same shape
     """
-    with open(outfile, 'w', errors='ignore') as f:
-        f.write(grids_to_str(grids))
+
+    decoded_message = grids_to_str(grids)
+
+    if save_as_png:
+        with open(outfile, 'w', errors='ignore') as f:
+            f.write(decoded_message)
+
+    return decoded_message
 
 def get_message_grid_from_grids(mgrids, conj_map):
     """
@@ -186,10 +192,10 @@ def get_conj_map(cgrids, nbits_per_map):
     assert len(conj_map) == sum(nbits_per_map), '{0} != {1}'.format(len(conj_map), sum(nbits_per_map))
     return conj_map
 
-def write_conjugated_message_grids(outfile, grids, alpha):
+def write_conjugated_message_grids(outfile, grids, alpha, save_as_png):
     messages, conj_map_grids, nbits_per_map = separate_conj_map_from_message(grids, alpha)
     if len(conj_map_grids) == 0:
         return
     conj_map = get_conj_map(conj_map_grids, nbits_per_map)
     message_grids = get_message_grid_from_grids(messages, conj_map)
-    write_message_grids(outfile, message_grids)
+    return write_message_grids(outfile, message_grids, save_as_png)

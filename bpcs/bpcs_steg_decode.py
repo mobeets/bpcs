@@ -28,7 +28,7 @@ class BPCSDecodeImage(ActOnImage):
     def modify(self, alpha):
         return remove_message_from_vessel(self.arr, alpha, (8,8))
 
-def decode(infile, outfile, alpha=0.45):
+def decode(infile, outfile, alpha=0.45, save_as_png=True):
     x = BPCSDecodeImage(infile, as_rgb=True, bitplane=True, gray=True, nbits_per_layer=8)
     grids = x.modify(alpha)
-    write_conjugated_message_grids(outfile, grids, alpha)
+    return write_conjugated_message_grids(outfile, grids, alpha, save_as_png)
